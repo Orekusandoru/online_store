@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import pool from "./database";
-import { JWT_SECRET, BCRYPT_SALT_ROUNDS } from "./config";
+import pool from "../database";
+import { JWT_SECRET, BCRYPT_SALT_ROUNDS } from "../config";
 
 // Реєстрація 
 export const register = async (req: Request, res: Response): Promise<any> => {
