@@ -18,9 +18,9 @@ router.get("/profile", authenticateToken, (req, res) => {
     res.status(200).json({ message: "Це захищений маршрут", user: req.user });
   });
 
-router.post("/products", authenticateToken, createProduct);  // Створення товару
-router.get("/products", authenticateToken, getProducts);     // Отримання товарів
-router.patch("/products/:id", authenticateToken, updateProduct); // Оновлення товару
-router.delete("/products/:id", authenticateToken, deleteProduct); // Видалення товару  
+router.post("/products", authenticateToken, createProduct);  
+router.get("/products", authenticateToken, getProducts);     
+router.patch("/products/:id", authenticateToken, updateProduct); 
+router.delete("/products/:id", authenticateToken, deleteProduct); 
 
 export default router;
