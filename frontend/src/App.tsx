@@ -1,35 +1,25 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import PrivateRoute from "./utils/PrivateRoute";
-import { AuthProvider } from "./context/AuthContext";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import PrivateRoute from "./routes/PrivateRoute";
+import DashboardCategories from "./components/DashboardCategories";
+import DashboardProducts from "./components/DashboardProducts";
 
-import Layout from "./components/Layout";
-import HomePage from "./pages/HomePage";
-import RegisterPage from "./pages/Auth/RegisterPage";
-import LoginPage from "./pages/Auth/LoginPage";
-import Dashboard from "./pages/Auth/Dashboard";
-import CoursesPage from "./pages/courses/CoursesPage";
-import CourseDetailsPage from "./pages/courses/CourseDetailsPage ";
-import UserProfilePage from "./pages/Auth/UserProfilePage";
+const App = () => (
+  <Router>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
-export default function App() {
-  return (
-    <Router>
-      <AuthProvider>
-        <Routes>
-         <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}/>  
-          <Route path="/allcourses" element={<PrivateRoute><CoursesPage/></PrivateRoute>}/> 
-          
-          <Route path="/courses/:courseId" element={<PrivateRoute><CourseDetailsPage/></PrivateRoute>}/> 
-          <Route path="/users/:userId" element={<PrivateRoute><UserProfilePage/></PrivateRoute>}/> 
-         
+      <Route element={<PrivateRoute />}>
+        <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="categories" element={<DashboardCategories />} />
+          <Route path="products" element={<DashboardProducts />} />
         </Route>
-        </Routes>
-      
-      </AuthProvider>
-    </Router>
-  );
-}
+      </Route>
+    </Routes>
+  </Router>
+);
+
+export default App;

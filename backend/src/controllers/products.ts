@@ -1,4 +1,3 @@
-// controllers/products.ts
 import { Request, Response } from "express";
 import pool from "../database";
 
@@ -117,7 +116,6 @@ export const updateProduct = async (req: Request, res: Response): Promise<any> =
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const deleteProduct = async (req: Request, res: Response): Promise<any> => {
   const { id } = req.params;
