@@ -4,7 +4,9 @@ import pool from "../database";
 export const createOrder = async (req: Request, res: Response): Promise<any>  => {
   const client = await pool.connect();
   try {
-    const { user_id, items } = req.body;
+    const user_id = req.user.id;
+    const { items } = req.body;
+
 
     await client.query("BEGIN");
 

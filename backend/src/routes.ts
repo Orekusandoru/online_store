@@ -43,9 +43,10 @@ router.get("/categories", authenticateToken, getCategories);
 router.patch("/categories/:id", authenticateToken, updateCategory); 
 router.delete("/categories/:id", authenticateToken, deleteCategory); 
 
-router.post("/", createOrder);
-router.get("/:id", getOrderById);
-router.put("/:id", updateOrder);
-router.delete("/:id", deleteOrder);
+// Orders
+router.post("/orders", authenticateToken, createOrder);
+router.get("/orders/:id", authenticateToken, getOrderById);
+router.put("/orders/:id", authenticateToken, updateOrder);
+router.delete("/orders/:id", authenticateToken, deleteOrder);
 
 export default router;
