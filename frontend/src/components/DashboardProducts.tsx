@@ -120,7 +120,7 @@ const DashboardProducts = () => {
             <p><strong>Створено:</strong> {new Date(product.created_at).toLocaleString()}</p>
             <p><strong>Оновлено:</strong> {new Date(product.updated_at).toLocaleString()}</p>
             <button onClick={() => handleDeleteProduct(product.id)} className="mt-2 text-red-600">Видалити</button>
-            </li>
+            </li> 
         ))}
      </ul>
 

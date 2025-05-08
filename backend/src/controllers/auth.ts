@@ -7,12 +7,11 @@ import { JWT_SECRET, BCRYPT_SALT_ROUNDS } from "../config";
 
 export const register = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ message: "Вкажіть email та пароль" });
     }
-
 
     const existingUser = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     if (existingUser.rows.length > 0) {
@@ -21,19 +20,23 @@ export const register = async (req: Request, res: Response): Promise<any> => {
 
     const hashedPassword = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 
+    // Якщо роль не вказана, автоматично ставимо 'user'
+    const userRole = role === "seller" ? "seller" : "user";
+
     const newUser = await pool.query(
-      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email",
-      [email, hashedPassword]
+      "INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING id, email, role",
+      [email, hashedPassword, userRole]
     );
 
     const token = jwt.sign({ id: newUser.rows[0].id, email }, JWT_SECRET, { expiresIn: "7d" });
 
-    return res.status(201).json({ message: "Користувач створений", token });
+    return res.status(201).json({ message: "Користувач створений", token, role: userRole });
   } catch (error) {
     console.error("Помилка реєстрації:", error);
     return res.status(500).json({ message: "Помилка сервера" });
   }
 };
+
 
 export const login = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -57,7 +60,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
 
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: "7d" });
 
-    return res.status(200).json({ message: "Успішний вхід", token });
+    return res.status(200).json({ message: "Успішний вхід", token, role: user.role });
   } catch (error) {
     console.error("Помилка логінації:", error);
     return res.status(500).json({ message: "Помилка сервера" });

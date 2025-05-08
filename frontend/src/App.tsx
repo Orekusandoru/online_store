@@ -5,10 +5,12 @@ import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./routes/PrivateRoute";
 import DashboardCategories from "./components/DashboardCategories";
 import DashboardProducts from "./components/DashboardProducts";
+import Home from "./pages/Home";
 
 const App = () => (
   <Router>
     <Routes>
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 

@@ -13,6 +13,12 @@ import {
   updateCategory,
   deleteCategory
 } from "./controllers/categories"; 
+import { 
+  createOrder, 
+  deleteOrder, 
+  getOrderById, 
+  updateOrder 
+} from "./controllers/orders";
 
 const router = express.Router();
 
@@ -36,5 +42,10 @@ router.post("/categories", authenticateToken, createCategory);
 router.get("/categories", authenticateToken, getCategories);  
 router.patch("/categories/:id", authenticateToken, updateCategory); 
 router.delete("/categories/:id", authenticateToken, deleteCategory); 
+
+router.post("/", createOrder);
+router.get("/:id", getOrderById);
+router.put("/:id", updateOrder);
+router.delete("/:id", deleteOrder);
 
 export default router;

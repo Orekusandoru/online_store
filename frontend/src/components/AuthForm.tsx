@@ -8,15 +8,17 @@ type AuthFormProps = {
 
 type AuthResponse = {
   token: string;
+  role: "user" | "admin" | "seller";
 };
 
 const isAuthResponse = (data: any): data is AuthResponse => {
-  return data && typeof data.token === "string";
+  return data && typeof data.token === "string" && typeof data.role === "string";
 };
 
 const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"user" | "seller">("user");  // Додано роль
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -26,14 +28,19 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
 
     try {
       const data =
-        type === "login" ? await login(email, password) : await register(email, password);
-      
-      // Перевірка типу даних
+        type === "login"
+          ? await login(email, password)
+          : await register(email, password, role);  // Передача ролі
+
       if (isAuthResponse(data)) {
         sessionStorage.setItem("token", data.token);
-        navigate("/dashboard");
-      } else {
-        throw new Error("Невірна структура відповіді");
+        sessionStorage.setItem("role", data.role);
+
+        if (data.role === "admin") {
+          navigate("/dashboard");
+        } else {
+          navigate("/"); // Якщо роль не admin, редірект на головну
+        }
       }
     } catch (err: any) {
       setError(err.response?.data?.message || "Помилка");
@@ -61,6 +68,16 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        {type === "register" && (
+          <select
+            className="border p-2 w-full mb-3"
+            value={role}
+            onChange={(e) => setRole(e.target.value as "user" | "seller")}
+          >
+            <option value="user">Користувач</option>
+            <option value="seller">Продавець</option>
+          </select>
+        )}
         <button className="bg-blue-500 text-white p-2 w-full">
           {type === "login" ? "Увійти" : "Зареєструватися"}
         </button>
