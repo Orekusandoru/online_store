@@ -4,13 +4,20 @@ import pool from "../database";
 export const createOrder = async (req: Request, res: Response): Promise<any>  => {
   const client = await pool.connect();
   try {
-    const { user_id, items } = req.body;
+    const user_id = req.user.id;
+    const { items } = req.body;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: "Список товарів порожній або неправильний" });
+    }
+
+    const total_price = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
 
     await client.query("BEGIN");
 
     const orderRes = await client.query(
-      `INSERT INTO orders (user_id) VALUES ($1) RETURNING id`,
-      [user_id]
+      `INSERT INTO orders (user_id, total_price) VALUES ($1, $2) RETURNING id`,
+      [user_id, total_price]
     );
 
     const orderId = orderRes.rows[0].id;

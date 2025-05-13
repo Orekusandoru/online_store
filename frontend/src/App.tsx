@@ -6,11 +6,15 @@ import PrivateRoute from "./routes/PrivateRoute";
 import DashboardCategories from "./components/DashboardCategories";
 import DashboardProducts from "./components/DashboardProducts";
 import Home from "./pages/Home";
+import Shop from "./pages/Shop";
+import { CartProvider } from "./context/CartContext";
 
 const App = () => (
   <Router>
+  <CartProvider>
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/shop" element={<Shop />} /> {/* <-- для всіх */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
@@ -21,7 +25,9 @@ const App = () => (
         </Route>
       </Route>
     </Routes>
-  </Router>
+  </CartProvider>
+</Router>
+
 );
 
 export default App;
