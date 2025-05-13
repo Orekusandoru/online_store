@@ -43,10 +43,17 @@ router.get("/categories", authenticateToken, getCategories);
 router.patch("/categories/:id", authenticateToken, updateCategory); 
 router.delete("/categories/:id", authenticateToken, deleteCategory); 
 
+<<<<<<< HEAD
+=======
+// Orders
+>>>>>>> 2db4d5c06db95a2dc66a3fcabda550070641fac5
 router.post("/orders", authenticateToken, createOrder);
 router.get("/orders/:id", authenticateToken, getOrderById);
 router.put("/orders/:id", authenticateToken, updateOrder);
 router.delete("/orders/:id", authenticateToken, deleteOrder);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2db4d5c06db95a2dc66a3fcabda550070641fac5
 
 export default router;

@@ -7,11 +7,14 @@ export const createOrder = async (req: Request, res: Response): Promise<any>  =>
     const user_id = req.user.id;
     const { items } = req.body;
 
+<<<<<<< HEAD
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ message: "Список товарів порожній або неправильний" });
     }
 
     const total_price = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+=======
+>>>>>>> 2db4d5c06db95a2dc66a3fcabda550070641fac5
 
     await client.query("BEGIN");
 
