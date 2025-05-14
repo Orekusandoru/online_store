@@ -8,9 +8,12 @@ export interface OrderItem {
 
 export interface Order {
     id?: number; 
-    user_id: number; 
+    user_id?: number; 
     total_price: number; 
     status?: "pending" | "confirmed" | "shipped" | "cancelled"; 
+    name?: string;
+    phone?: string;
+    address?: string;
     created_at?: Date; 
     updated_at?: Date; 
     items?: OrderItem[]; 

@@ -40,3 +40,27 @@
 .read-the-docs {
   color: #888;
 }
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="search"] {
+  background: #f3f4f6;
+  border: 2px solid #222;
+  color: #111;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  margin-bottom: 1em;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  cursor: pointer;
+}
+
+input:focus {
+  border: 2px solid #2563eb;
+  background: #fff;
+  box-shadow: 0 0 0 2px #60a5fa;
+}

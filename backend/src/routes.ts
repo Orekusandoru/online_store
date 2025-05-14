@@ -33,7 +33,7 @@ router.get("/profile", authenticateToken, (req, res) => {
 
 // Продукти
 router.post("/products", authenticateToken, createProduct);  
-router.get("/products", authenticateToken, getProducts);     
+router.get("/products", getProducts);     
 router.patch("/products/:id", authenticateToken, updateProduct); 
 router.delete("/products/:id", authenticateToken, deleteProduct);
 
@@ -44,7 +44,7 @@ router.patch("/categories/:id", authenticateToken, updateCategory);
 router.delete("/categories/:id", authenticateToken, deleteCategory); 
 
 
-router.post("/orders", authenticateToken, createOrder);
+router.post("/orders", createOrder);
 router.get("/orders/:id", authenticateToken, getOrderById);
 router.put("/orders/:id", authenticateToken, updateOrder);
 router.delete("/orders/:id", authenticateToken, deleteOrder);

@@ -4,20 +4,31 @@ import pool from "../database";
 export const createOrder = async (req: Request, res: Response): Promise<any>  => {
   const client = await pool.connect();
   try {
-    const user_id = req.user.id;
-    const { items } = req.body;
+    const { items, name, email, phone, address } = req.body;
+    let user_id = null;
+
+    // Якщо користувач авторизований
+    if (req.user && req.user.id) {
+      user_id = req.user.id;
+    }
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ message: "Список товарів порожній або неправильний" });
+    }
+
+    
+    if (!user_id && (!name || !email || !phone || !address)) {
+      return res.status(400).json({ message: "Необхідно вказати ім'я, email, телефон та адресу" });
     }
 
     const total_price = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
 
     await client.query("BEGIN");
 
+    // Додаємо додаткові поля для гостя
     const orderRes = await client.query(
-      `INSERT INTO orders (user_id, total_price) VALUES ($1, $2) RETURNING id`,
-      [user_id, total_price]
+      `INSERT INTO orders (user_id, total_price, name, email, phone, address) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+      [user_id, total_price, name || null, email || null, phone || null, address || null]
     );
 
     const orderId = orderRes.rows[0].id;

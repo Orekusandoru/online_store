@@ -1,14 +1,13 @@
 @import "tailwindcss";
 
-
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #213547;
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -67,5 +66,33 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #f3f4f6;
+    background-color: #242424;
+  }
+  a {
+    color: #8ab4f8;
+  }
+  a:hover {
+    color: #a5b4fc;
+  }
+  button {
+    background-color: #222e36;
+    color: #f3f4f6;
+  }
+  input,
+  textarea {
+    background: #18181b;
+    color: #f3f4f6;
+    border: 2px solid #444;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: #bdbdbd;
+    opacity: 1;
   }
 }

@@ -3,34 +3,36 @@ import axios from "axios";
 import { Product } from "../../types/types";
 import { useCart } from "../context/CartContext";
 import Cart from "../components/Cart";
+import OrderForm from "../components/OrderForm";
 
 const Shop = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const { addToCart } = useCart();
 
- useEffect(() => {
-  const token = sessionStorage.getItem("token");
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
 
-  axios
-    .get<Product[]>("/api/products", {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    })
-    .then((res) => setProducts(res.data))
-    .catch((err) => {
-      console.error(err);
-      alert("Не вдалося отримати товари.");
-    });
-}, []);
+    const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
 
-    if (products.length === 0) {
-        return <div className="p-6">Завантаження товарів...</div>;
-    }
-   
+    axios
+      .get<Product[]>("/api/products", { headers })
+      .then((res) => setProducts(res.data))
+      .catch((err) => {
+        console.error(err);
+        alert("Не вдалося отримати товари.");
+      });
+  }, []);
+
+  if (products.length === 0) {
+    return <div className="p-6">Завантаження товарів...</div>;
+  }
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Магазин</h1>
 
       <Cart />
+      <OrderForm />
 
       <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         {products.map((product) => (

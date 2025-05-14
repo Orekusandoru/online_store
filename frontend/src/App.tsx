@@ -8,6 +8,7 @@ import DashboardProducts from "./components/DashboardProducts";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import { CartProvider } from "./context/CartContext";
+import OrderForm from "./components/OrderForm";
 
 const App = () => (
   <Router>
