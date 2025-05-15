@@ -47,13 +47,13 @@ const OrderForm = () => {
   }
 
   return (
-    <form onSubmit={handleOrder} className="max-w-md mx-auto p-6 bg-gradient-to-l bg-gray-500 m-2 rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Оформлення замовлення</h2>
+    <form onSubmit={handleOrder} className="max-w-md mx-auto p-6 bg-main m-2 rounded shadow">
+      <h2 className="text-xl font-bold mb-4 text-dark">Оформлення замовлення</h2>
       {error && <p className="text-red-500">{error}</p>}
       {!token && (
         <>
           <input
-            className="border p-2 w-full mb-3"
+            className="input-main w-full mb-3"
             name="name"
             placeholder="Ім'я"
             value={guestData.name}
@@ -61,7 +61,7 @@ const OrderForm = () => {
             required
           />
           <input
-            className="border p-2 w-full mb-3"
+            className="input-main w-full mb-3"
             name="email"
             type="email"
             placeholder="Email"
@@ -70,7 +70,7 @@ const OrderForm = () => {
             required
           />
           <input
-            className="border p-2 w-full mb-3"
+            className="input-main w-full mb-3"
             name="phone"
             placeholder="Телефон"
             value={guestData.phone}
@@ -78,7 +78,7 @@ const OrderForm = () => {
             required
           />
           <input
-            className="border p-2 w-full mb-3"
+            className="input-main w-full mb-3"
             name="address"
             placeholder="Адреса доставки"
             value={guestData.address}
@@ -89,7 +89,7 @@ const OrderForm = () => {
       )}
       <button
         type="submit"
-        className="bg-green-600 text-white px-4 py-2 rounded w-full"
+        className="btn-main w-full"
         disabled={loading}
       >
         {loading ? "Оформлення..." : "Підтвердити замовлення"}

@@ -101,3 +101,30 @@ export const deleteOrder = async (req: Request, res: Response): Promise<any>  =>
     res.status(500).json({ message: "Помилка сервера" });
   }
 };
+
+export const getAllOrders = async (req: Request, res: Response): Promise<any> => {
+  // Only admin can view all orders
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({ message: "Доступ заборонено" });
+  }
+  try {
+    // Get all orders
+    const ordersRes = await pool.query("SELECT * FROM orders ORDER BY created_at DESC");
+    const orders = ordersRes.rows;
+
+    // Get all order items
+    const itemsRes = await pool.query("SELECT * FROM order_items");
+    const items = itemsRes.rows;
+
+    // Attach items to orders
+    const ordersWithItems = orders.map(order => ({
+      ...order,
+      items: items.filter(item => item.order_id === order.id)
+    }));
+
+    res.json(ordersWithItems);
+  } catch (err) {
+    console.error("Помилка отримання всіх замовлень:", err);
+    res.status(500).json({ message: "Помилка сервера" });
+  }
+};

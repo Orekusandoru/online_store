@@ -1,8 +1,26 @@
+@import "tailwindcss";
+
+body {
+  background: linear-gradient(135deg, #273F4F 0%, #1e293b 100%);
+  min-height: 100vh;
+  scroll-behavior: smooth;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #273F4F;
+}
+::-webkit-scrollbar-thumb {
+  background: #FE7743;
+  border-radius: 8px;
 }
 
 .logo {
@@ -35,6 +53,8 @@
 
 .card {
   padding: 2em;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.10), 0 1.5px 6px 0 rgba(254,119,67,0.08);
+  border-radius: 1rem;
 }
 
 .read-the-docs {
@@ -64,3 +84,94 @@ input:focus {
   background: #fff;
   box-shadow: 0 0 0 2px #60a5fa;
 }
+
+.bg-main {
+  background-color: #EFEEEA;
+}
+.bg-accent {
+  background-color: #FE7743;
+}
+.bg-dark {
+  background-color: #273F4F;
+}
+.text-dark {
+  color: #aabcc8;
+}
+.text-accent {
+  color: #FE7743;
+}
+.text-bg {
+  color: #EFEEEA;
+}
+.btn-main,
+button.btn-main {
+  background-color: #FE7743 !important;
+  color: #273F4F !important;
+  border-radius: 8px !important;
+  border: none !important;
+  padding: 0.6em 1.2em !important;
+  font-weight: 600 !important;
+  transition: background 0.2s, color 0.2s !important;
+  appearance: button !important;
+}
+
+.btn-main:hover,
+.btn-main:focus,
+button.btn-main:hover,
+button.btn-main:focus {
+  background-color: #273F4F !important;
+  color: #FE7743 !important;
+}
+
+.btn-outline,
+button.btn-outline {
+  background: transparent !important;
+  color: #FE7743 !important;
+  border: 2px solid #FE7743 !important;
+  border-radius: 8px !important;
+  padding: 0.6em 1.2em !important;
+  font-weight: 600 !important;
+  transition: background 0.2s, color 0.2s !important;
+  appearance: button !important;
+}
+
+.btn-outline:hover,
+.btn-outline:focus,
+button.btn-outline:hover,
+button.btn-outline:focus {
+  background: #FE7743 !important;
+  color: #EFEEEA !important;
+}
+.input-main {
+  background: #EFEEEA;
+  color: #273F4F;
+  border: 2px solid #FE7743;
+  border-radius: 6px;
+  padding: 0.5em 1em;
+  margin-bottom: 1em;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.input-main:focus {
+  border: 2px solid #273F4F;
+  background: #fff;
+  box-shadow: 0 0 0 2px #FE7743;
+}
+.select-main {
+  background: #FE7743;
+  color: #273F4F;
+  border-radius: 6px;
+  padding: 0.5em 1em;
+  border: 2px solid #273F4F;
+  transition: background 0.2s, color 0.2s;
+}
+.select-main:focus, .select-main:hover {
+  background: #EFEEEA;
+  color: #273F4F;
+}
+
+.shadow, .shadow-lg, .shadow-2xl {
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.10), 0 1.5px 6px 0 rgba(254,119,67,0.08);
+  border-radius: 1rem;
+}
+

@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import { CartProvider } from "./context/CartContext";
 import OrderForm from "./components/OrderForm";
+import DashboardOrders from "./components/DashboardOrders";
 
 const App = () => (
   <Router>
@@ -23,6 +24,7 @@ const App = () => (
         <Route path="/dashboard" element={<Dashboard />}>
           <Route path="categories" element={<DashboardCategories />} />
           <Route path="products" element={<DashboardProducts />} />
+          <Route path="orders" element={<DashboardOrders />} />
         </Route>
       </Route>
     </Routes>

@@ -17,7 +17,8 @@ import {
   createOrder, 
   deleteOrder, 
   getOrderById, 
-  updateOrder 
+  updateOrder,
+  getAllOrders
 } from "./controllers/orders";
 
 const router = express.Router();
@@ -43,11 +44,10 @@ router.get("/categories", authenticateToken, getCategories);
 router.patch("/categories/:id", authenticateToken, updateCategory); 
 router.delete("/categories/:id", authenticateToken, deleteCategory); 
 
-
+router.get("/orders", authenticateToken, getAllOrders); // <-- admin only
 router.post("/orders", createOrder);
 router.get("/orders/:id", authenticateToken, getOrderById);
 router.put("/orders/:id", authenticateToken, updateOrder);
 router.delete("/orders/:id", authenticateToken, deleteOrder);
-
 
 export default router;

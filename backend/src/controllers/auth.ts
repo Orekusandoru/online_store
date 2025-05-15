@@ -28,7 +28,11 @@ export const register = async (req: Request, res: Response): Promise<any> => {
       [email, hashedPassword, userRole]
     );
 
-    const token = jwt.sign({ id: newUser.rows[0].id, email }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign(
+      { id: newUser.rows[0].id, email, role: userRole }, // include role
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     return res.status(201).json({ message: "Користувач створений", token, role: userRole });
   } catch (error) {
@@ -58,7 +62,11 @@ export const login = async (req: Request, res: Response): Promise<any> => {
       return res.status(401).json({ message: "Невірні облікові дані" });
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role }, // include role
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     return res.status(200).json({ message: "Успішний вхід", token, role: user.role });
   } catch (error) {

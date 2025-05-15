@@ -48,12 +48,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-green-800 shadow-md rounded-lg">
-      <h2 className="text-xl font-bold mb-4">{type === "login" ? "Вхід" : "Реєстрація"}</h2>
+    <div className="max-w-md mx-auto p-6 bg-main shadow-md rounded-lg">
+      <h2 className="text-xl font-bold mb-4 text-dark">{type === "login" ? "Вхід" : "Реєстрація"}</h2>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
-          className="border p-2 w-full mb-3"
+          className="input-main w-full mb-3"
           type="email"
           placeholder="Email"
           value={email}
@@ -61,7 +61,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           required
         />
         <input
-          className="border p-2 w-full mb-3"
+          className="input-main w-full mb-3"
           type="password"
           placeholder="Пароль"
           value={password}
@@ -70,7 +70,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         />
         {type === "register" && (
           <select
-            className="border p-2 w-full mb-3"
+            className="select-main w-full mb-3"
             value={role}
             onChange={(e) => setRole(e.target.value as "user" | "seller")}
           >
@@ -78,7 +78,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
             <option value="seller">Продавець</option>
           </select>
         )}
-        <button className="bg-blue-500 text-white p-2 w-full">
+        <button className="btn-main w-full">
           {type === "login" ? "Увійти" : "Зареєструватися"}
         </button>
       </form>

@@ -28,20 +28,20 @@ const Shop = () => {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Магазин</h1>
+    <div className="p-6 bg-main min-h-screen">
+      <h1 className="text-2xl font-bold mb-4 text-dark">Магазин</h1>
 
       <Cart />
       <OrderForm />
 
       <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         {products.map((product) => (
-          <li key={product.id} className="border p-4 rounded shadow">
-            <h2 className="text-lg font-semibold">{product.name}</h2>
-            <p>{product.description}</p>
-            <p>Ціна: {product.price}</p>
+          <li key={product.id} className="border p-4 rounded shadow bg-dark">
+            <h2 className="text-lg font-semibold text-bg">{product.name}</h2>
+            <p className="text-bg">{product.description}</p>
+            <p className="text-bg">Ціна: <span className="text-accent">{product.price}</span></p>
             <button
-              className="mt-2 bg-blue-500 text-white px-4 py-1 rounded"
+              className="btn-main mt-2"
               onClick={() =>
                 addToCart({
                   product_id: product.id,

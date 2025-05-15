@@ -62,20 +62,30 @@ const DashboardCategories = () => {
 
   return (
     <div>
-      <h1>Управління категоріями</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center text-accent drop-shadow">Управління категоріями</h1>
       {error && <p className="text-red-500">{error}</p>}
-      <input 
-        type="text" 
-        value={newCategory.name} 
-        onChange={e => setNewCategory({...newCategory, name: e.target.value})} 
-        placeholder="Нова категорія" 
-      />
-      <button onClick={handleAddCategory}>Додати категорію</button>
+      <div className="bg-dark/80 rounded-xl shadow-lg p-6 mb-8 max-w-md mx-auto flex flex-col gap-3">
+        <input 
+          className="input-main"
+          type="text" 
+          value={newCategory.name} 
+          onChange={e => setNewCategory({...newCategory, name: e.target.value})} 
+          placeholder="Нова категорія" 
+        />
+        <button onClick={handleAddCategory} className="btn-main self-end">
+          Додати категорію
+        </button>
+      </div>
       <ul>
         {categories.map(category => (
-          <li key={category.id}>
-            {category.name} 
-            <button onClick={() => handleDeleteCategory(category.id)}>Видалити</button>
+          <li
+            key={category.id}
+            className="bg-dark text-white p-2 rounded mb-2 shadow border border-accent/30 hover:shadow-2xl transition-shadow duration-200 flex items-center justify-between"
+          >
+            <span>{category.name}</span>
+            <button onClick={() => handleDeleteCategory(category.id)} className="btn-outline ml-2">
+              Видалити
+            </button>
           </li>
         ))}
       </ul>

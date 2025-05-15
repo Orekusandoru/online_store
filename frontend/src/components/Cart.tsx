@@ -32,18 +32,18 @@ const Cart = () => {
   };
 
   return (
-    <div className="mb-6 border p-4 rounded shadow">
-      <h2 className="text-xl font-bold">Кошик</h2>
+    <div className="mb-6 border p-4 rounded shadow bg-main">
+      <h2 className="text-xl font-bold text-dark">Кошик</h2>
       {cart.length === 0 && <p>Кошик порожній</p>}
       <ul>
         {cart.map((item) => (
           <li key={item.product_id} className="flex justify-between items-center">
-            <span>
+            <span className="text-dark">
               {item.name} — {item.quantity} x {item.price} грн
             </span>
             <button
               onClick={() => removeFromCart(item.product_id)}
-              className=" text-red-600 hover:text-red-800 m-1 "
+              className="btn-outline m-1"
             >
               ✖
             </button>
@@ -52,14 +52,14 @@ const Cart = () => {
       </ul>
       {cart.length > 0 && (
         <>
-          <div className="mt-4 text-lg font-semibold text-green-400">
+          <div className="mt-4 text-lg font-semibold text-accent">
             Сума замовлення:{" "}
             {cart.reduce((total, item) => total + item.quantity * item.price, 0)}{" "}
             грн
           </div>
           <button
             onClick={handleOrder}
-            className="mt-2 bg-green-600 text-white px-4 py-1 rounded"
+            className="btn-main mt-2"
           >
             Оформити замовлення
           </button>
