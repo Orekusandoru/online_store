@@ -128,3 +128,27 @@ export const getAllOrders = async (req: Request, res: Response): Promise<any> =>
     res.status(500).json({ message: "Помилка сервера" });
   }
 };
+
+export const getMyOrders = async (req: Request, res: Response): Promise<any> => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ message: "Не авторизовано" });
+  }
+  try {
+    const ordersRes = await pool.query(
+      "SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC",
+      [req.user.id]
+    );
+    const orders = ordersRes.rows;
+    const itemsRes = await pool.query("SELECT * FROM order_items WHERE order_id = ANY($1::int[])", [
+      orders.map((o: any) => o.id),
+    ]);
+    const items = itemsRes.rows;
+    const ordersWithItems = orders.map((order: any) => ({
+      ...order,
+      items: items.filter((item: any) => item.order_id === order.id),
+    }));
+    res.json(ordersWithItems);
+  } catch (err) {
+    res.status(500).json({ message: "Помилка сервера" });
+  }
+};

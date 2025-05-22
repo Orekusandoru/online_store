@@ -1,34 +1,19 @@
 // src/components/Cart.tsx
 import axios from "axios";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
-const Cart = () => {
+type CartProps = {
+  onClose?: () => void;
+};
+
+const Cart = ({ onClose }: CartProps) => {
   const { cart, clearCart, removeFromCart } = useCart();
-  
-  const handleOrder = async () => {
-    const token = sessionStorage.getItem("token");
-    if (!token) return alert("Авторизуйтесь, щоб зробити замовлення");
+  const navigate = useNavigate();
 
-    try {
-      interface OrderResponse {
-        orderId: number;
-      }
-
-      const response = await axios.post<OrderResponse>(
-        "/api/orders",
-        { items: cart },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      alert(`Замовлення №${response.data.orderId} створено`);
-      clearCart();
-    } catch (error) {
-      alert("Не вдалося створити замовлення");
-    }
+  const handleGoToOrder = () => {
+    if (onClose) onClose();
+    navigate("/order");
   };
 
   return (
@@ -58,7 +43,7 @@ const Cart = () => {
             грн
           </div>
           <button
-            onClick={handleOrder}
+            onClick={handleGoToOrder}
             className="btn-main mt-2"
           >
             Оформити замовлення

@@ -18,8 +18,10 @@ import {
   deleteOrder, 
   getOrderById, 
   updateOrder,
-  getAllOrders
+  getAllOrders,
+  getMyOrders
 } from "./controllers/orders";
+import { updateProfile, getProfile } from "./controllers/profile";
 
 const router = express.Router();
 
@@ -27,10 +29,10 @@ router.get("/test", test);
 router.post("/auth/register", register);
 router.post("/auth/login", login);
 
-router.get("/profile", authenticateToken, (req, res) => {
-    // req.user  (id, email)
-    res.status(200).json({ message: "Це захищений маршрут", user: req.user });
-  });
+router.get("/profile", authenticateToken, getProfile);
+router.patch("/profile", authenticateToken, updateProfile); 
+
+router.get("/my-orders", authenticateToken, getMyOrders); 
 
 // Продукти
 router.post("/products", authenticateToken, createProduct);  
@@ -44,7 +46,7 @@ router.get("/categories", authenticateToken, getCategories);
 router.patch("/categories/:id", authenticateToken, updateCategory); 
 router.delete("/categories/:id", authenticateToken, deleteCategory); 
 
-router.get("/orders", authenticateToken, getAllOrders); // <-- admin only
+router.get("/orders", authenticateToken, getAllOrders); 
 router.post("/orders", createOrder);
 router.get("/orders/:id", authenticateToken, getOrderById);
 router.put("/orders/:id", authenticateToken, updateOrder);

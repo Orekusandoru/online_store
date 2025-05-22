@@ -10,27 +10,34 @@ import Shop from "./pages/Shop";
 import { CartProvider } from "./context/CartContext";
 import OrderForm from "./components/OrderForm";
 import DashboardOrders from "./components/DashboardOrders";
+import Header from "./components/Header"; // додати
+import OrderPage from "./pages/OrderPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const App = () => (
   <Router>
-  <CartProvider>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/shop" element={<Shop />} /> {/* <-- для всіх */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    <CartProvider>
+      <Header />
+      <div className="pt-22 bg-main min-h-screen">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/order" element={<OrderPage />} /> {/* новий маршрут */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<ProfilePage />} />
 
-      <Route element={<PrivateRoute />}>
-        <Route path="/dashboard" element={<Dashboard />}>
-          <Route path="categories" element={<DashboardCategories />} />
-          <Route path="products" element={<DashboardProducts />} />
-          <Route path="orders" element={<DashboardOrders />} />
-        </Route>
-      </Route>
-    </Routes>
-  </CartProvider>
-</Router>
-
+          <Route element={<PrivateRoute />}>
+            <Route path="/dashboard" element={<Dashboard />}>
+              <Route path="categories" element={<DashboardCategories />} />
+              <Route path="products" element={<DashboardProducts />} />
+              <Route path="orders" element={<DashboardOrders />} />
+            </Route>
+          </Route>
+        </Routes>
+      </div>
+    </CartProvider>
+  </Router>
 );
 
 export default App;

@@ -15,14 +15,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #273F4F 0%, #1e293b 100%);
-  color: #fff;
-  scroll-behavior: smooth;
-}
+
 
 a {
   font-weight: 500;

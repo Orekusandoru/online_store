@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import axios from "axios";
 
 const OrderForm = () => {
   const { cart, clearCart } = useCart();
   const token = sessionStorage.getItem("token");
-  const [guestData, setGuestData] = useState({
+  const [userData, setUserData] = useState({
     name: "",
     email: "",
     phone: "",
@@ -14,8 +14,30 @@ const OrderForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Підтягуємо дані користувача, якщо є токен
+  useEffect(() => {
+    if (token) {
+      axios
+        .get("/api/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          const data = res.data as { user?: { email?: string; phone?: string; address?: string; name?: string } };
+          const user = data.user || {};
+          setUserData((prev) => ({
+            ...prev,
+            email: user.email || "",
+            phone: user.phone || "",
+            address: user.address || "",
+            name: user.name || "",
+          }));
+        })
+        .catch(() => {});
+    }
+  }, [token]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGuestData({ ...guestData, [e.target.name]: e.target.value });
+    setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   const handleOrder = async (e: React.FormEvent) => {
@@ -27,14 +49,16 @@ const OrderForm = () => {
       let headers: any = {};
       if (token) {
         headers.Authorization = `Bearer ${token}`;
+        // Передаємо дані, якщо вони є
+        orderPayload = { ...orderPayload, ...userData };
       } else {
-        orderPayload = { ...orderPayload, ...guestData };
+        orderPayload = { ...orderPayload, ...userData };
       }
       const response = await axios.post("/api/orders", orderPayload, { headers });
       const data = response.data as { orderId?: string };
       alert(`Замовлення №${data.orderId || "?"} створено!`);
       clearCart();
-      setGuestData({ name: "", email: "", phone: "", address: "" });
+      setUserData({ name: "", email: "", phone: "", address: "" });
     } catch (err: any) {
       setError(err.response?.data?.message || "Не вдалося оформити замовлення");
     } finally {
@@ -47,46 +71,42 @@ const OrderForm = () => {
   }
 
   return (
-    <form onSubmit={handleOrder} className="max-w-md mx-auto p-6 bg-main m-2 rounded shadow">
+    <form id="order" onSubmit={handleOrder} className="max-w-md mx-auto p-6 bg-main m-2 rounded shadow">
       <h2 className="text-xl font-bold mb-4 text-dark">Оформлення замовлення</h2>
       {error && <p className="text-red-500">{error}</p>}
-      {!token && (
-        <>
-          <input
-            className="input-main w-full mb-3"
-            name="name"
-            placeholder="Ім'я"
-            value={guestData.name}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="input-main w-full mb-3"
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={guestData.email}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="input-main w-full mb-3"
-            name="phone"
-            placeholder="Телефон"
-            value={guestData.phone}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="input-main w-full mb-3"
-            name="address"
-            placeholder="Адреса доставки"
-            value={guestData.address}
-            onChange={handleChange}
-            required
-          />
-        </>
-      )}
+      <input
+        className="input-main w-full mb-3"
+        name="name"
+        placeholder="Ім'я"
+        value={userData.name}
+        onChange={handleChange}
+        required
+      />
+      <input
+        className="input-main w-full mb-3"
+        name="email"
+        type="email"
+        placeholder="Email"
+        value={userData.email}
+        onChange={handleChange}
+        required
+      />
+      <input
+        className="input-main w-full mb-3"
+        name="phone"
+        placeholder="Телефон"
+        value={userData.phone}
+        onChange={handleChange}
+        required
+      />
+      <input
+        className="input-main w-full mb-3"
+        name="address"
+        placeholder="Адреса доставки"
+        value={userData.address}
+        onChange={handleChange}
+        required
+      />
       <button
         type="submit"
         className="btn-main w-full"
