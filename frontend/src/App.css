@@ -96,7 +96,7 @@ input:focus {
   background-color: #273F4F;
 }
 .text-dark {
-  color: #aabcc8;
+  color: #305975;
 }
 .text-accent {
   color: #FE7743;
@@ -109,7 +109,8 @@ button.btn-main {
   background-color: #FE7743 !important;
   color: #273F4F !important;
   border-radius: 8px !important;
-  border: none !important;
+  border: 1 !important;
+  border-color: #FE7743;
   padding: 0.6em 1.2em !important;
   font-weight: 600 !important;
   transition: background 0.2s, color 0.2s !important;

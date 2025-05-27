@@ -19,7 +19,7 @@ const Cart = ({ onClose }: CartProps) => {
   return (
     <div className="mb-6 border p-4 rounded shadow bg-main">
       <h2 className="text-xl font-bold text-dark">Кошик</h2>
-      {cart.length === 0 && <p>Кошик порожній</p>}
+      {cart.length === 0 && <p className="text-dark">Кошик порожній</p>}
       <ul>
         {cart.map((item) => (
           <li key={item.product_id} className="flex justify-between items-center">

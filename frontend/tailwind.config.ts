@@ -7,7 +7,7 @@ const config: Config = {
       colors: {
         accent: "#FE7743",
         bg: "#EFEEEA",
-        dark: "#273F4F",
+        dark: "#102430",
         black: "#000000",
       },
     },

@@ -19,9 +19,12 @@ import {
   getOrderById, 
   updateOrder,
   getAllOrders,
-  getMyOrders
+  getMyOrders,
+  getAllOrdersWithDetails 
 } from "./controllers/orders";
 import { updateProfile, getProfile } from "./controllers/profile";
+import { liqpayInitiate } from "./controllers/liqpay"; 
+import { liqpayCallback } from "./controllers/liqpay"; 
 
 const router = express.Router();
 
@@ -34,7 +37,7 @@ router.patch("/profile", authenticateToken, updateProfile);
 
 router.get("/my-orders", authenticateToken, getMyOrders); 
 
-// Продукти
+// Товари
 router.post("/products", authenticateToken, createProduct);  
 router.get("/products", getProducts);     
 router.patch("/products/:id", authenticateToken, updateProduct); 
@@ -47,9 +50,13 @@ router.patch("/categories/:id", authenticateToken, updateCategory);
 router.delete("/categories/:id", authenticateToken, deleteCategory); 
 
 router.get("/orders", authenticateToken, getAllOrders); 
-router.post("/orders", createOrder);
+router.get("/orders-details", authenticateToken, getAllOrdersWithDetails); // новий маршрут
+router.post("/orders", createOrder); 
 router.get("/orders/:id", authenticateToken, getOrderById);
 router.put("/orders/:id", authenticateToken, updateOrder);
 router.delete("/orders/:id", authenticateToken, deleteOrder);
+
+router.post("/liqpay-initiate", liqpayInitiate);
+router.post("/liqpay-callback", liqpayCallback); 
 
 export default router;

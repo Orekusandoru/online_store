@@ -4,12 +4,17 @@ import pool from "../database";
 export const createOrder = async (req: Request, res: Response): Promise<any>  => {
   const client = await pool.connect();
   try {
-    const { items, name, email, phone, address } = req.body;
-    let user_id = null;
+    const { items, name, email, phone, address, user_id } = req.body;
+    let real_user_id = null;
 
-    // Якщо користувач авторизований
+  
+    console.log("req.user:", req.user);
+    console.log("user_id from body:", user_id);
+
     if (req.user && req.user.id) {
-      user_id = req.user.id;
+      real_user_id = req.user.id;
+    } else if (user_id) {
+      real_user_id = user_id;
     }
 
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -17,7 +22,7 @@ export const createOrder = async (req: Request, res: Response): Promise<any>  =>
     }
 
     
-    if (!user_id && (!name || !email || !phone || !address)) {
+    if (!real_user_id && (!name || !email || !phone || !address)) {
       return res.status(400).json({ message: "Необхідно вказати ім'я, email, телефон та адресу" });
     }
 
@@ -25,10 +30,12 @@ export const createOrder = async (req: Request, res: Response): Promise<any>  =>
 
     await client.query("BEGIN");
 
-    // Додаємо додаткові поля для гостя
+  
+    console.log("Inserting order with user_id:", real_user_id);
+
     const orderRes = await client.query(
       `INSERT INTO orders (user_id, total_price, name, email, phone, address) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-      [user_id, total_price, name || null, email || null, phone || null, address || null]
+      [real_user_id, total_price, name || null, email || null, phone || null, address || null]
     );
 
     const orderId = orderRes.rows[0].id;
@@ -103,20 +110,19 @@ export const deleteOrder = async (req: Request, res: Response): Promise<any>  =>
 };
 
 export const getAllOrders = async (req: Request, res: Response): Promise<any> => {
-  // Only admin can view all orders
+
   if (!req.user || req.user.role !== "admin") {
     return res.status(403).json({ message: "Доступ заборонено" });
   }
   try {
-    // Get all orders
+   
     const ordersRes = await pool.query("SELECT * FROM orders ORDER BY created_at DESC");
     const orders = ordersRes.rows;
 
-    // Get all order items
+
     const itemsRes = await pool.query("SELECT * FROM order_items");
     const items = itemsRes.rows;
 
-    // Attach items to orders
     const ordersWithItems = orders.map(order => ({
       ...order,
       items: items.filter(item => item.order_id === order.id)
@@ -149,6 +155,38 @@ export const getMyOrders = async (req: Request, res: Response): Promise<any> => 
     }));
     res.json(ordersWithItems);
   } catch (err) {
+    res.status(500).json({ message: "Помилка сервера" });
+  }
+};
+
+// Новий контролер для детального перегляду замовлень (з назвами товарів і категоріями)
+export const getAllOrdersWithDetails = async (req: Request, res: Response): Promise<any> => {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({ message: "Доступ заборонено" });
+  }
+  try {
+    const ordersRes = await pool.query("SELECT * FROM orders ORDER BY created_at DESC");
+    const orders = ordersRes.rows;
+
+    const itemsRes = await pool.query(`
+      SELECT 
+        oi.*, 
+        p.name as product_name, 
+        c.name as category_name
+      FROM order_items oi
+      LEFT JOIN products p ON oi.product_id = p.id
+      LEFT JOIN categories c ON p.category_id = c.id
+    `);
+    const items = itemsRes.rows;
+
+    const ordersWithItems = orders.map(order => ({
+      ...order,
+      items: items.filter(item => item.order_id === order.id)
+    }));
+
+    res.json(ordersWithItems);
+  } catch (err) {
+    console.error("Помилка отримання всіх замовлень (детально):", err);
     res.status(500).json({ message: "Помилка сервера" });
   }
 };

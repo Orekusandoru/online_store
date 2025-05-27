@@ -1,8 +1,12 @@
 import OrderForm from "../components/OrderForm";
+import OrderSummary from "../components/OrderSummary";
 
 const OrderPage = () => (
-  <div className="min-h-screen flex items-center justify-center bg-main">
-    <OrderForm />
+  <div className="flex flex-col md:flex-row items-start justify-center bg-main min-h-screen gap-8 p-4">
+    <div className="flex-1 max-w-xl">
+      <OrderForm />
+    </div>
+    <OrderSummary />
   </div>
 );
 
