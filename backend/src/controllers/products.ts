@@ -20,40 +20,50 @@ export const createProduct = async (req: Request, res: Response): Promise<any> =
 };
 
 export const getProducts = async (req: Request, res: Response): Promise<any> => {
-  const { category_id, min_price, max_price, limit, offset } = req.query;
+  const { category, minPrice, maxPrice, sort, page, limit } = req.query;
 
   let query = `SELECT * FROM products WHERE 1=1`;
   const values: any[] = [];
   let queryIndex = 1;
 
-  if (category_id) {
+  if (category) {
     query += ` AND category_id = $${queryIndex}`;
-    values.push(category_id);
+    values.push(category);
     queryIndex++;
   }
-
-  if (min_price) {
+  if (minPrice) {
     query += ` AND price >= $${queryIndex}`;
-    values.push(min_price);
+    values.push(minPrice);
     queryIndex++;
   }
-
-  if (max_price) {
+  if (maxPrice) {
     query += ` AND price <= $${queryIndex}`;
-    values.push(max_price);
+    values.push(maxPrice);
     queryIndex++;
   }
 
-  if (limit) {
-    query += ` LIMIT $${queryIndex}`;
-    values.push(limit);
-    queryIndex++;
+  // Сортування
+  if (sort === "price_asc") {
+    query += ` ORDER BY price ASC`;
+  } else if (sort === "price_desc") {
+    query += ` ORDER BY price DESC`;
+  } else if (sort === "rating_desc") {
+    query += ` ORDER BY rating DESC NULLS LAST`;
+  } else if (sort === "rating_asc") {
+    query += ` ORDER BY rating ASC NULLS LAST`;
+  } else {
+    query += ` ORDER BY created_at DESC`;
   }
 
-  if (offset) {
-    query += ` OFFSET $${queryIndex}`;
-    values.push(offset);
-  }
+  // Пагінація
+  let pageNum = Number(page) || 1;
+  let limitNum = Number(limit) || 20;
+  let offset = (pageNum - 1) * limitNum;
+  query += ` LIMIT $${queryIndex}`;
+  values.push(limitNum);
+  queryIndex++;
+  query += ` OFFSET $${queryIndex}`;
+  values.push(offset);
 
   try {
     const result = await pool.query(query, values);

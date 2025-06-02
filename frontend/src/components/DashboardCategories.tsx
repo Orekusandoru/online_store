@@ -64,7 +64,7 @@ const DashboardCategories = () => {
     <div>
       <h1 className="text-3xl font-bold mb-8 text-center text-accent drop-shadow">Управління категоріями</h1>
       {error && <p className="text-red-500">{error}</p>}
-      <div className="bg-dark/80 rounded-xl shadow-lg p-6 mb-8 max-w-md mx-auto flex flex-col gap-3">
+      <div className="bg-dark rounded-xl shadow-lg p-6 mb-8 max-w-md mx-auto flex flex-col gap-3">
         <input 
           className="input-main"
           type="text" 

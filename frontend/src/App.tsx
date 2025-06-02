@@ -13,6 +13,11 @@ import DashboardOrders from "./components/DashboardOrders";
 import Header from "./components/Header"; // додати
 import OrderPage from "./pages/OrderPage";
 import ProfilePage from "./pages/ProfilePage";
+import CompanyBankDetails from "./components/CompanyBankDetails";
+import { useParams } from "react-router-dom";
+import BankDetailsPage from "./pages/BankDetailsPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
+
 
 const App = () => (
   <Router>
@@ -26,9 +31,11 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/bank-details/:orderId" element={<BankDetailsPage />} />
 
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />}>
+              <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="categories" element={<DashboardCategories />} />
               <Route path="products" element={<DashboardProducts />} />
               <Route path="orders" element={<DashboardOrders />} />

@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import Cart from "./Cart";
 import { useCart } from "../context/CartContext";
+import CompanyBankDetails from "./CompanyBankDetails";
 
 const Header = () => {
   const token = sessionStorage.getItem("token");
@@ -9,10 +10,10 @@ const Header = () => {
   const navigate = useNavigate();
 
   const [cartOpen, setCartOpen] = useState(false);
+  const [showContacts, setShowContacts] = useState(false);
   const cartRef = useRef<HTMLDivElement>(null);
   const { cart } = useCart();
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -39,13 +40,15 @@ const Header = () => {
           to="/"
           className="text-2xl font-bold mb-2 sm:mb-0 transition-colors duration-200 cursor-pointer select-none"
           style={{ textDecoration: "none", color: "inherit" }}
-          onMouseOver={e => (e.currentTarget.style.color = "#FE7743")}
-          onMouseOut={e => (e.currentTarget.style.color = "")}
+          onMouseOver={(e) => (e.currentTarget.style.color = "#FE7743")}
+          onMouseOut={(e) => (e.currentTarget.style.color = "")}
         >
           Online Store
         </Link>
         <nav className="flex gap-4 items-center">
-          <Link to="/shop" className="btn-outline">Магазин</Link>
+          <Link to="/shop" className="btn-outline">
+            Магазин
+          </Link>
           <button
             className="relative btn-outline"
             onClick={() => setCartOpen((v) => !v)}
@@ -73,25 +76,59 @@ const Header = () => {
           {cartOpen && (
             <div
               ref={cartRef}
-              className="absolute right-4 top-16 z-50 w-80 max-w-[90vw] bg-main rounded-xl shadow-lg border border-accent/30 p-4"
-              onClick={e => e.stopPropagation()}
+              className="absolute right-4 top-16 z-50 w-80 max-w-[90vw] bg-[#EDF1D6] rounded-xl shadow-lg"
+              onClick={(e) => e.stopPropagation()}
             >
               <Cart onClose={() => setCartOpen(false)} />
             </div>
           )}
           {!token && (
             <>
-              <Link to="/login" className="btn-outline">Вхід</Link>
-              <Link to="/register" className="btn-outline">Реєстрація</Link>
+              <Link to="/login" className="btn-outline">
+                Вхід
+              </Link>
+              <Link to="/register" className="btn-outline">
+                Реєстрація
+              </Link>
             </>
           )}
           {token && role === "admin" && (
-            <Link to="/dashboard" className="btn-outline">Адмін-панель</Link>
+            <Link to="/dashboard" className="btn-outline">
+              Адмін-панель
+            </Link>
           )}
           {token && (
-            <button onClick={handleLogout} className="btn-main">Вийти</button>
+            <button onClick={handleLogout} className="btn-main">
+              Вийти
+            </button>
           )}
+          <button
+            className="btn-outline"
+            onClick={() => setShowContacts(true)}
+            type="button"
+          >
+            Контакти
+          </button>
         </nav>
+        {showContacts && (
+          <div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]"
+            onClick={() => setShowContacts(false)}
+          >
+            <div
+              className="bg-white rounded-xl shadow-lg p-6 max-w-lg w-full relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="absolute top-2 right-2 text-2xl text-gray-400 hover:text-accent"
+                onClick={() => setShowContacts(false)}
+              >
+                &times;
+              </button>
+              <CompanyBankDetails />
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

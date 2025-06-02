@@ -17,13 +17,18 @@ const Cart = ({ onClose }: CartProps) => {
   };
 
   return (
-    <div className="mb-6 border p-4 rounded shadow bg-main">
-      <h2 className="text-xl font-bold text-dark">Кошик</h2>
-      {cart.length === 0 && <p className="text-dark">Кошик порожній</p>}
-      <ul>
+    <div className=" border border-[#609966] p-4 rounded-xl shadow bg-[#EDF1D6] text-[#40513B]">
+      <h2 className="text-xl font-bold mb-4 bg-[#609966] text-[#EDF1D6] rounded-lg px-3 py-2">
+        Кошик
+      </h2>
+      {cart.length === 0 && <p className="text-[#40513B]">Кошик порожній</p>}
+      <ul className="divide-y divide-[#9DC08B] mb-4">
         {cart.map((item) => (
-          <li key={item.product_id} className="flex justify-between items-center">
-            <span className="text-dark">
+          <li
+            key={item.product_id}
+            className="flex justify-between items-center py-2"
+          >
+            <span>
               {item.name} — {item.quantity} x {item.price} грн
             </span>
             <button
@@ -37,16 +42,25 @@ const Cart = ({ onClose }: CartProps) => {
       </ul>
       {cart.length > 0 && (
         <>
-          <div className="mt-4 text-lg font-semibold text-accent">
+          <div className="mt-4 text-lg font-semibold text-[#609966]">
             Сума замовлення:{" "}
-            {cart.reduce((total, item) => total + item.quantity * item.price, 0)}{" "}
+            {cart.reduce(
+              (total, item) => total + item.quantity * item.price,
+              0
+            )}{" "}
             грн
           </div>
           <button
             onClick={handleGoToOrder}
-            className="btn-main mt-2"
+            className="btn-main mt-4 w-full"
           >
             Оформити замовлення
+          </button>
+          <button
+            onClick={clearCart}
+            className="btn-outline mt-2 w-full"
+          >
+            Очистити кошик
           </button>
         </>
       )}

@@ -20,14 +20,15 @@ const OrderForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Доставка
+ 
   const [isPostomat, setIsPostomat] = useState(false);
   const [city, setCity] = useState("");
   const [cityRef, setCityRef] = useState("");
   const [warehouse, setWarehouse] = useState("");
 
-  // Оплата
-  const [paymentType, setPaymentType] = useState("cod"); // "liqpay", "cod", "bank"
+  const [paymentType, setPaymentType] = useState("cod"); 
+  const [showBankDetails, setShowBankDetails] = useState(false);
+  const [bankOrderId, setBankOrderId] = useState<number | null>(null);
 
   const navigate = useNavigate();
 
@@ -73,7 +74,7 @@ const OrderForm = () => {
         orderPayload = { ...orderPayload, ...userData, address: deliveryAddress, paymentType };
       }
       const response = await axios.post("/api/orders", orderPayload, { headers });
-      const data = response.data as { orderId?: string; total?: number };
+      const data = response.data as { orderId?: number; total?: number };
 
       // LiqPay 
       if (paymentType === "liqpay") {
@@ -103,6 +104,18 @@ const OrderForm = () => {
         setCityRef("");
         setWarehouse("");
         navigate("/shop");
+        return;
+      }
+
+      if (paymentType === "bank") {
+        clearCart();
+        setUserData({ id: "", name: "", email: "", phone: "", address: "" });
+        setCity("");
+        setCityRef("");
+        setWarehouse("");
+        setBankOrderId(data.orderId ?? null);
+        setLoading(false);
+        navigate(`/bank-details/${data.orderId}`);
         return;
       }
 
@@ -167,6 +180,13 @@ const OrderForm = () => {
         paymentType={paymentType}
         setPaymentType={setPaymentType}
       />
+      {paymentType === "bank" && (
+        <div className="my-4">
+          <div className="text-xs text-dark mt-2">
+            <b>Збережіть ці реквізити для оплати. Вони також будуть доступні у вашому кабінеті.</b>
+          </div>
+        </div>
+      )}
       <button
         type="submit"
         className="btn-main w-full"

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Product, NewProduct } from "../../types/types";
+import { Product, NewProduct, Category } from "../../types/types";
   
 const DashboardProducts = () => {
   
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [newProduct, setNewProduct] = useState<NewProduct>({
     name: "",
     description: "",
@@ -25,8 +26,18 @@ const DashboardProducts = () => {
     .then(response => {
       setProducts(response.data);
     })
-    .catch(error => {
+    .catch(() => {
       setError("Не вдалося отримати товари.");
+    });
+
+    axios.get<Category[]>("/api/categories", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then(response => {
+      setCategories(response.data);
+    })
+    .catch(() => {
+    
     });
   }, []);
   
@@ -40,7 +51,7 @@ const DashboardProducts = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
   
-      setProducts([...products, response.data]); // 👈 сюди ми додаємо продукт вже з id
+      setProducts([...products, response.data]);
       setNewProduct({  
                     name: "",
                     description: "",
@@ -69,12 +80,13 @@ const DashboardProducts = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
+    <div className="max-w-4xl mx-auto py-8 ">
       <h1 className="text-3xl font-bold mb-8 text-center text-accent drop-shadow">Управління товарами</h1>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-      <div className="bg-dark/80 rounded-xl shadow-lg p-6 mb-8 max-w-2xl mx-auto">
+      <div className="bg-dark rounded-xl shadow-lg p-6 mb-8 max-w-2xl mx-auto">
         <div className="flex flex-col gap-3">
+          <label className="text-dark font-semibold">Назва товару</label>
           <input
             className="input-main"
             type="text"
@@ -82,6 +94,7 @@ const DashboardProducts = () => {
             onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
             placeholder="Назва товару"
           />
+          <label className="text-dark font-semibold">Опис товару</label>
           <input
             className="input-main"
             type="text"
@@ -89,6 +102,7 @@ const DashboardProducts = () => {
             onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
             placeholder="Опис товару"
           />
+          <label className="text-dark font-semibold">Ціна</label>
           <input
             className="input-main"
             type="number"
@@ -96,19 +110,48 @@ const DashboardProducts = () => {
             onChange={(e) => setNewProduct({ ...newProduct, price: parseFloat(e.target.value) })}
             placeholder="Ціна"
           />
-          <input
-            className="input-main"
-            type="number"
+          <label className="text-dark font-semibold">Категорія</label>
+          <select
+            className="select-main"
             value={newProduct.category_id}
-            onChange={(e) => setNewProduct({ ...newProduct, category_id: parseInt(e.target.value) })}
-            placeholder="ID категорії"
-          />
+            onChange={e => setNewProduct({ ...newProduct, category_id: parseInt(e.target.value) })}
+          >
+            <option value={0}>Оберіть категорію</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
+          </select>
+          <label className="text-dark font-semibold">URL зображення</label>
           <input
             className="input-main"
             type="text"
             value={newProduct.image_url}
             onChange={(e) => setNewProduct({ ...newProduct, image_url: e.target.value })}
             placeholder="URL зображення"
+          />
+          <label className="text-dark font-semibold">Завантажити зображення</label>
+          <input
+            className="input-main"
+            type="file"
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const formData = new FormData();
+              formData.append("image", file);
+              try {
+                const token = sessionStorage.getItem("token");
+                const res = await axios.post<{ url: string }>("/api/upload", formData, {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                  },
+                });
+                setNewProduct((p) => ({ ...p, image_url: res.data.url }));
+              } catch {
+                setError("Не вдалося завантажити зображення");
+              }
+            }}
           />
           <button onClick={handleAddProduct} className="btn-main mt-2 self-end">
             Додати товар
@@ -134,8 +177,10 @@ const DashboardProducts = () => {
                   <span className="ml-2">{product.price}</span>
                 </div>
                 <div>
-                  <span className="font-semibold text-accent">Категорія ID:</span>
-                  <span className="ml-2">{product.category_id}</span>
+                  <span className="font-semibold text-accent">Категорія:</span>
+                  <span className="ml-2">
+                    {categories.find(c => c.id === product.category_id)?.name || product.category_id}
+                  </span>
                 </div>
               </div>
               <div className="space-y-2">

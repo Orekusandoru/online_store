@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import axios from "axios";
 
 interface CartItem {
   product_id: number;
@@ -18,6 +19,49 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      axios
+        .get<{ items: CartItem[] }>("/api/cart", { headers: { Authorization: `Bearer ${token}` } })
+        .then((res) => {
+          setCart(res.data.items || []);
+          setInitialized(true);
+        })
+        .catch(() => {
+          setCart([]);
+          setInitialized(true);
+        });
+    } else {
+      const local = localStorage.getItem("cart");
+      setCart(local ? JSON.parse(local) : []);
+      setInitialized(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    
+    if (!initialized) return;
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      const safeCart = Array.isArray(cart)
+        ? cart.map(item => ({
+            ...item,
+            price: typeof item.price === "string" ? Number(item.price) : item.price,
+            quantity: typeof item.quantity === "string" ? Number(item.quantity) : item.quantity,
+          }))
+        : [];
+      axios.post(
+        "/api/cart",
+        { items: safeCart },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } else {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }, [cart, initialized]);
 
   const addToCart = (item: CartItem) => {
     setCart((prev) => {

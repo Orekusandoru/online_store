@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import CompanyBankDetails from "../components/CompanyBankDetails";
 
 type User = {
   name?: string;
@@ -8,12 +10,25 @@ type User = {
   address?: string;
 };
 
+type OrderItem = {
+  product_id: number;
+  quantity: number;
+  price: number;
+  product_name?: string;
+  image_url?: string;
+};
+
 type Order = {
+  payment_type: string;
   id: number;
   total_price: number;
   status: string;
   created_at: string;
-  items: { product_id: number; quantity: number; price: number }[];
+  items: OrderItem[];
+};
+
+type Props = {
+  purpose?: string;
 };
 
 const ProfilePage = () => {
@@ -23,13 +38,14 @@ const ProfilePage = () => {
   const [form, setForm] = useState({ name: "", phone: "", address: "" });
   const [error, setError] = useState("");
   const [tab, setTab] = useState<"profile" | "orders">("profile");
+  const [expandedOrders, setExpandedOrders] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     const fetchData = async () => {
       const token = sessionStorage.getItem("token");
       if (!token) return;
       try {
-        // Тепер бекенд повертає всі дані користувача з БД
+    
         const profileRes = await axios.get("/api/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -46,7 +62,7 @@ const ProfilePage = () => {
         });
         setOrders(ordersRes.data);
       } catch (err) {
-        // optionally handle error
+      
       }
     };
     fetchData();
@@ -71,8 +87,8 @@ const ProfilePage = () => {
   if (!user) return <div className="p-6">Завантаження профілю...</div>;
 
   return (
-    <div className="text-xl  text-gray-800 max-w-4xl mx-auto p-6 bg-main rounded-xl shadow flex flex-col md:flex-row gap-8">
-      {/* Vertical navigation */}
+    <div className="text-xl  text-gray-800 max-w-4xl mx-auto p-6 bg-bg  rounded-xl shadow flex flex-col md:flex-row gap-8">
+  
       <aside className="w-full md:w-56 flex-shrink-0 mb-4 md:mb-0">
         <nav className="flex md:flex-col gap-2">
           <button
@@ -89,7 +105,7 @@ const ProfilePage = () => {
           </button>
         </nav>
       </aside>
-      {/* Main content */}
+ 
       <section className="flex-1">
         {tab === "profile" && (
           <>
@@ -153,30 +169,102 @@ const ProfilePage = () => {
         )}
         {tab === "orders" && (
           <>
-            <h2 className="text-xl font-bold mb-2 text-dark">Мої замовлення</h2>
-            <ul className="space-y-4">
+            <h2 className="text-2xl font-bold mb-6 text-accent text-center drop-shadow">Мої замовлення</h2>
+            <ul className="space-y-6">
               {orders.length === 0 && <li>Замовлень немає</li>}
-              {orders.map((order) => (
-                <li key={order.id} className="bg-dark text-white rounded p-4 shadow">
-                  <div>
-                    <b>№{order.id}</b> | <span className="text-accent">{order.status}</span> |{" "}
-                    <span>Сума: {order.total_price} грн</span>
-                  </div>
-                  <div>
-                    <b>Створено:</b> {new Date(order.created_at).toLocaleString()}
-                  </div>
-                  <div>
-                    <b>Товари:</b>
-                    <ul className="ml-4">
-                      {order.items.map((item, idx) => (
-                        <li key={idx}>
-                          ID товару: {item.product_id}, Кількість: {item.quantity}, Ціна: {item.price}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </li>
-              ))}
+              {orders.map((order) => {
+                const expanded = expandedOrders[order.id] || false;
+                return (
+                  <li
+                    key={order.id}
+                    className="bg-dark text-white rounded-xl shadow-lg border border-accent/30 hover:shadow-2xl transition-shadow duration-200 p-6 flex flex-col gap-3"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                      <div className="flex items-center gap-4 flex-wrap">
+                        <span className="font-bold text-accent text-xl">№{order.id}</span>
+                        <span className="text-gray-400">|</span>
+                        <span className="font-semibold">Статус:</span>
+                        <span className="text-accent font-bold">{order.status}</span>
+                      
+                        {order.payment_type === "bank" && order.status !== "paid" && (
+                          <Link
+                            to={`/bank-details/${order.id}`}
+                            className="btn-outline ml-4"
+                          >
+                            Реквізити для оплати
+                          </Link>
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-300">
+                        Створено: {new Date(order.created_at).toLocaleString()}
+                      </div>
+                    </div>
+                    <div className="mt-2 mb-2">
+                      <div className="inline-block bg-accent rounded-lg px-4 py-2">
+                        <span className="font-semibold text-bg mr-2">Сума:</span>
+                        <span className="font-bold text-bg text-lg align-middle">{order.total_price}</span>
+                        <span className="ml-1 text-base text-bg" style={{ fontSize: "0.95em" }}>грн</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-semibold text-accent">Товари:</span>
+                        {order.items.length > 1 && (
+                          <button
+                            className="btn-outline"
+                            style={{ minWidth: 90 }}
+                            onClick={() =>
+                              setExpandedOrders((prev) => ({
+                                ...prev,
+                                [order.id]: !expanded,
+                              }))
+                            }
+                          >
+                            {expanded ? "Сховати" : `Показати всі (${order.items.length})`}
+                          </button>
+                        )}
+                      </div>
+                      <ul className="ml-0 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {(expanded || order.items.length === 1
+                          ? order.items
+                          : [order.items[0]]
+                        ).map((item, idx) => (
+                          <li
+                            key={idx}
+                            className="bg-white bg-accent p-3 rounded-lg border border-accent/40 shadow-sm flex flex-col gap-2"
+                          >
+                            {item.image_url && (
+                              <div className="flex justify-center items-center mb-2">
+                                <img
+                                  src={item.image_url}
+                                  alt={item.product_name || "Товар"}
+                                  className="w-auto h-28 object-contain bg-white rounded"
+                                />
+                              </div>
+                            )}
+                            <div className="font-semibold text-accent text-base">
+                              {item.product_name || `Товар #${item.product_id}`}
+                            </div>
+                            <div className="flex flex-col gap-1 text-sm">
+                              <div>
+                                <span className="font-semibold">Кількість:</span> {item.quantity}
+                              </div>
+                              <div>
+                                <span className="font-semibold">Ціна:</span> {item.price} грн
+                              </div>
+                            </div>
+                          </li>
+                        ))}
+                        {!expanded && order.items.length > 1 && (
+                          <li className="text-xs text-gray-400 flex items-center">
+                            ...та ще {order.items.length - 1} товар{order.items.length - 1 > 1 ? "и" : ""}
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </>
         )}

@@ -25,8 +25,14 @@ import {
 import { updateProfile, getProfile } from "./controllers/profile";
 import { liqpayInitiate } from "./controllers/liqpay"; 
 import { liqpayCallback } from "./controllers/liqpay"; 
+import { requireAdminOrSeller } from "./middleware/roleMiddleware";
+import { uploadImage } from "./controllers/upload";
+import { getCart, saveCart } from "./controllers/cart";
+import { getAnalytics } from "./controllers/analytics";
 
 const router = express.Router();
+
+
 
 router.get("/test", test);
 router.post("/auth/register", register);
@@ -50,7 +56,7 @@ router.patch("/categories/:id", authenticateToken, updateCategory);
 router.delete("/categories/:id", authenticateToken, deleteCategory); 
 
 router.get("/orders", authenticateToken, getAllOrders); 
-router.get("/orders-details", authenticateToken, getAllOrdersWithDetails); // новий маршрут
+router.get("/orders-details", authenticateToken, getAllOrdersWithDetails);
 router.post("/orders", createOrder); 
 router.get("/orders/:id", authenticateToken, getOrderById);
 router.put("/orders/:id", authenticateToken, updateOrder);
@@ -58,5 +64,17 @@ router.delete("/orders/:id", authenticateToken, deleteOrder);
 
 router.post("/liqpay-initiate", liqpayInitiate);
 router.post("/liqpay-callback", liqpayCallback); 
+
+router.post(
+  "/upload",
+  authenticateToken,
+  requireAdminOrSeller,
+  uploadImage 
+);
+
+router.get("/cart", authenticateToken, getCart);
+router.post("/cart", authenticateToken, saveCart);
+
+router.get("/analytics", authenticateToken, requireAdminOrSeller, getAnalytics);
 
 export default router;
