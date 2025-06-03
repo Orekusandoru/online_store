@@ -1,11 +1,12 @@
 import express from "express";
-import { test, register, login } from "./controllers/auth";
-import { authenticateToken } from "./middleware/authMiddleware";
+import { test, register, login, forgotPassword, resetPassword } from "./controllers/auth";
+import { authenticateToken, authenticateTokenOptional } from "./middleware/authMiddleware";
 import {
   createProduct,
   getProducts,
   updateProduct,  
-  deleteProduct
+  deleteProduct,
+  getProductById // додати
 } from "./controllers/products";
 import {
   createCategory,
@@ -29,6 +30,8 @@ import { requireAdminOrSeller } from "./middleware/roleMiddleware";
 import { uploadImage } from "./controllers/upload";
 import { getCart, saveCart } from "./controllers/cart";
 import { getAnalytics } from "./controllers/analytics";
+import { addOrUpdateReview, getReviews } from "./controllers/reviews";
+import { getArchivedProductById, getAllArchivedProducts } from "./controllers/archivedProducts";
 
 const router = express.Router();
 
@@ -37,6 +40,8 @@ const router = express.Router();
 router.get("/test", test);
 router.post("/auth/register", register);
 router.post("/auth/login", login);
+router.post("/auth/forgot-password", forgotPassword);
+router.post("/auth/reset-password", authenticateTokenOptional, resetPassword); 
 
 router.get("/profile", authenticateToken, getProfile);
 router.patch("/profile", authenticateToken, updateProfile); 
@@ -48,6 +53,11 @@ router.post("/products", authenticateToken, createProduct);
 router.get("/products", getProducts);     
 router.patch("/products/:id", authenticateToken, updateProduct); 
 router.delete("/products/:id", authenticateToken, deleteProduct);
+router.get("/products/:id", getProductById); 
+
+// Архівовані товари
+router.get("/archived-products", getAllArchivedProducts);
+router.get("/archived-products/:id", getArchivedProductById);
 
 // Категорії
 router.post("/categories", authenticateToken, createCategory);  
@@ -55,6 +65,7 @@ router.get("/categories", authenticateToken, getCategories);
 router.patch("/categories/:id", authenticateToken, updateCategory); 
 router.delete("/categories/:id", authenticateToken, deleteCategory); 
 
+// Замовлення
 router.get("/orders", authenticateToken, getAllOrders); 
 router.get("/orders-details", authenticateToken, getAllOrdersWithDetails);
 router.post("/orders", createOrder); 
@@ -76,5 +87,8 @@ router.get("/cart", authenticateToken, getCart);
 router.post("/cart", authenticateToken, saveCart);
 
 router.get("/analytics", authenticateToken, requireAdminOrSeller, getAnalytics);
+
+router.get("/products/:productId/reviews", getReviews);
+router.post("/products/:productId/reviews", authenticateToken, addOrUpdateReview);
 
 export default router;

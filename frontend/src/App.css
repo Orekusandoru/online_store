@@ -1,7 +1,23 @@
 @import "tailwindcss";
 
+/* Кольори */
+:root {
+  --color-bg: #45474B;
+  --color-header: #495E57;
+  --color-accent: #F4CE14;
+  --color-card: #F5F7F8;
+  --color-card-secondary: #E3E6E8;
+  --color-text: #232323;
+  --color-text-light: #F5F7F8;
+  --color-accent-dark: #bfae0e;
+  --color-accent-light: #fff6c2;
+  --color-border: #e0e0e0;
+}
+
 body {
-  @apply min-h-screen bg-gradient-to-br from-[#EDF1D6] to-[#40513B] scroll-smooth text-[#40513B];
+  @apply min-h-screen scroll-smooth;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 #root {
@@ -10,101 +26,175 @@ body {
 }
 
 ::-webkit-scrollbar {
-  @apply w-2 bg-[#40513B];
+  @apply w-2;
+  background: var(--color-header);
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-[#609966] rounded;
+  background: var(--color-accent);
+  border-radius: 8px;
 }
 
 .logo {
   @apply h-24 p-6 transition-[filter] duration-300;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #609966aa);
+  filter: drop-shadow(0 0 2em var(--color-accent));
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #9DC08Baa);
-}
-
-@keyframes logo-spin {
-  from { transform: rotate(0deg);}
-  to { transform: rotate(360deg);}
-}
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+  filter: drop-shadow(0 0 2em var(--color-accent-dark));
 }
 
 .card {
-  @apply p-8 shadow rounded-2xl ;
+  @apply p-8 shadow rounded-2xl;
+  background: var(--color-card);
 }
 
 .read-the-docs {
-  color: #609966;
+  color: var(--color-accent);
 }
+
+.bg-main,
+.bg-bg {
+  background: var(--color-bg) !important;
+  color: var(--color-text-light) !important;
+}
+.bg-header {
+  background: var(--color-header) !important;
+  color: var(--color-accent) !important;
+}
+.bg-accent {
+  background: var(--color-accent) !important;
+  color: var(--color-text) !important;
+}
+.bg-card {
+  background: var(--color-card) !important;
+  color: var(--color-text) !important;
+}
+.bg-card-secondary {
+  background: var(--color-card-secondary) !important;
+  color: var(--color-text) !important;
+}
+.bg-accent-light {
+  background: var(--color-accent-light) !important;
+  color: var(--color-text) !important;
+}
+.bg-accent-dark {
+  background: var(--color-accent-dark) !important;
+  color: var(--color-text-light) !important;
+}
+
+.text-accent {
+  color: var(--color-accent) !important;
+}
+.text-header {
+  color: var(--color-header) !important;
+}
+.text-bg {
+  color: var(--color-card) !important;
+}
+.text-main {
+  color: var(--color-bg) !important;
+}
+.text-dark {
+  color: var(--color-text) !important;
+}
+.text-light {
+  color: var(--color-text-light) !important;
+}
+
 
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="tel"],
 input[type="number"],
-input[type="search"] {
-  @apply bg-[#EDF1D6] border-2 border-[#40513B] text-[#40513B] px-4 py-2 rounded mb-4 outline-none transition-all duration-200 shadow-sm cursor-pointer;
+input[type="search"],
+textarea {
+  @apply border-2 px-4 py-2 rounded mb-3 outline-none transition-all duration-200 shadow-sm cursor-pointer;
+  background: var(--color-card);
+  border-color: var(--color-header);
+  color: var(--color-text);
 }
-input:focus {
-  @apply border-[#609966] bg-white ring-2 ring-[#9DC08B];
-}
-
-.btn-main {
-  @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200 border border-[#609966] bg-[#609966] text-[#EDF1D6];
-}
-.btn-main:hover, .btn-main:focus {
-  @apply bg-[#5bb042] text-[#EDF1D6] border-[#40513B];
-}
-
-.btn-outline {
-  @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200 border border-[#609966] bg-[#9DC08B] text-[#40513B];
-}
-.btn-outline:hover, .btn-outline:focus {
-  @apply bg-[#609966] text-[#EDF1D6] border-[#609966];
+input:focus, textarea:focus {
+  border-color: var(--color-accent);
+  background: #fffbe7;
+  box-shadow: 0 0 0 2px var(--color-accent-light);
 }
 
 .input-main {
-  @apply border-2 border-[#609966] rounded px-4 py-2 mb-4 outline-none transition-all duration-200 bg-[#EDF1D6] text-[#40513B];
+  @apply border-2 rounded px-4 mb-3 outline-none transition-all duration-200;
+  background: var(--color-card);
+  border-color: var(--color-header);
+  color: var(--color-text);
 }
 .input-main:focus {
-  @apply border-[#40513B] bg-white ring-2 ring-[#9DC08B];
+  border-color: var(--color-accent);
+  background: #fffbe7;
+  box-shadow: 0 0 0 2px var(--color-accent-light);
 }
+
 .select-main {
-  @apply rounded px-4 py-2 border-2 border-[#40513B] bg-[#9DC08B] text-[#40513B] transition-colors duration-200;
+  @apply rounded px-4 py-2 border-2 transition-colors duration-200;
+  background: var(--color-accent-light);
+  border-color: var(--color-header);
+  color: var(--color-text);
 }
 .select-main:focus, .select-main:hover {
-  @apply bg-[#EDF1D6] text-[#40513B];
+  background: var(--color-card);
+  color: var(--color-text);
 }
+
+
+.btn-main {
+  @apply rounded-lg px-4 py-2  mx-2 font-semibold transition-colors duration-200 border;
+  background: var(--color-accent);
+  color: var(--color-header);
+  border-color: var(--color-accent-dark);
+}
+.btn-main:hover, .btn-main:focus {
+  background: var(--color-accent-dark);
+  color: var(--color-card);
+  border-color: var(--color-header);
+}
+
+.btn-outline {
+  @apply rounded-lg px-4 py-2 font-semibold transition-colors duration-200 border;
+  background: var(--color-header);
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.btn-outline:hover, .btn-outline:focus {
+  background: var(--color-accent);
+  color: var(--color-header);
+  border-color: var(--color-header);
+}
+
 
 .shadow, .shadow-lg, .shadow-2xl {
   @apply shadow rounded-2xl;
 }
 
 .bg-dark {
-  background-color: #40513B !important;
-  color: #EDF1D6 !important;
-}
-.bg-accent {
-  background-color: #609966 !important;
-  color: #EDF1D6 !important;
-}
-.bg-orange {
-  background-color: #9DC08B !important;
-  color: #40513B !important;
-}
-.bg-bg {
-  background-color: #EDF1D6 !important;
-  color: #40513B !important;
+  background: var(--color-header) !important;
+  color: var(--color-accent) !important;
 }
 
-.text-accent {
-  color: #609966 !important;
+.bg-orange {
+  background: var(--color-accent-light) !important;
+  color: var(--color-header) !important;
+}
+
+
+.table-main {
+  background: var(--color-card);
+  color: var(--color-text);
+}
+.table-header {
+  background: var(--color-header);
+  color: var(--color-accent);
+}
+.table-accent {
+  background: var(--color-accent-light);
+  color: var(--color-header);
 }
 

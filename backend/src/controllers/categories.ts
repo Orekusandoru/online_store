@@ -28,7 +28,6 @@ export const getCategories = async (req: Request, res: Response): Promise<any> =
   }
 };
 
-
 export const updateCategory = async (req: Request, res: Response): Promise<any> => {
   const { id } = req.params;
   const { name } = req.body;
@@ -49,7 +48,6 @@ export const updateCategory = async (req: Request, res: Response): Promise<any> 
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const deleteCategory = async (req: Request, res: Response): Promise<any> => {
   const { id } = req.params;

@@ -27,3 +27,20 @@ export const authenticateToken = async (req: Request, res: Response,next: NextFu
     next();
   });
 };
+
+export const authenticateTokenOptional = (req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    req.user = undefined;
+    return next();
+  }
+  jwt.verify(token, JWT_SECRET as string, (err, user) => {
+    if (err) {
+      req.user = undefined;
+      return next();
+    }
+    req.user = user;
+    next();
+  });
+};

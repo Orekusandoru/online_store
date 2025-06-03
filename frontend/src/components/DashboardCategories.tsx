@@ -61,10 +61,10 @@ const DashboardCategories = () => {
   };
 
   return (
-    <div>
+    <div className="p-6 bg-light min-h-screen">
       <h1 className="text-3xl font-bold mb-8 text-center text-accent drop-shadow">Управління категоріями</h1>
       {error && <p className="text-red-500">{error}</p>}
-      <div className="bg-dark rounded-xl shadow-lg p-6 mb-8 max-w-md mx-auto flex flex-col gap-3">
+      <div className="bg-card-secondary rounded-xl shadow-lg p-6 mb-8 max-w-md mx-auto flex flex-col gap-3">
         <input 
           className="input-main"
           type="text" 
@@ -80,7 +80,7 @@ const DashboardCategories = () => {
         {categories.map(category => (
           <li
             key={category.id}
-            className="bg-dark text-white p-2 rounded mb-2 shadow border border-accent/30 hover:shadow-2xl transition-shadow duration-200 flex items-center justify-between"
+            className="bg-card-secondary text-white p-2 rounded mb-2 shadow border border-accent/30 hover:shadow-2xl transition-shadow duration-200 flex items-center justify-between"
           >
             <span>{category.name}</span>
             <button onClick={() => handleDeleteCategory(category.id)} className="btn-outline ml-2">

@@ -10,4 +10,7 @@ export interface Product {
   created_at?: Date;
   updated_at?: Date;
   category?: Category; 
+  rating?: number;
+  rating_count?: number;
+  popularity?: number;
 }

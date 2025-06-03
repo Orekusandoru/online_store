@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { login, register } from "../api/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 type AuthFormProps = {
   type: "login" | "register";
@@ -18,7 +18,7 @@ const isAuthResponse = (data: any): data is AuthResponse => {
 const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"user" | "seller">("user");  // Додано роль
+  const [role, setRole] = useState<"user" | "seller">("user");  
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
       const data =
         type === "login"
           ? await login(email, password)
-          : await register(email, password, role);  // Передача ролі
+          : await register(email, password, role); 
 
       if (isAuthResponse(data)) {
         sessionStorage.setItem("token", data.token);
@@ -39,7 +39,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         if (data.role === "admin") {
           navigate("/dashboard");
         } else {
-          navigate("/"); // Якщо роль не admin, редірект на головну
+          navigate("/");
         }
       }
     } catch (err: any) {
@@ -48,7 +48,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-main shadow-md rounded-lg">
+    <div className="max-w-md mx-auto p-6 bg-bg shadow-md rounded-lg mt-16 sm:mt-24 md:mt-32 flex flex-col justify-center">
       <h2 className="text-xl font-bold mb-4 text-dark">{type === "login" ? "Вхід" : "Реєстрація"}</h2>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit}>
@@ -77,6 +77,13 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
             <option value="user">Користувач</option>
             <option value="seller">Продавець</option>
           </select>
+        )}
+        {type === "login" && (
+          <div className="mb-3 text-right">
+            <Link to="/forgot-password" className="text-accent hover:underline text-sm">
+              Забули пароль?
+            </Link>
+          </div>
         )}
         <button className="btn-main w-full">
           {type === "login" ? "Увійти" : "Зареєструватися"}

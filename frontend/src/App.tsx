@@ -17,6 +17,10 @@ import CompanyBankDetails from "./components/CompanyBankDetails";
 import { useParams } from "react-router-dom";
 import BankDetailsPage from "./pages/BankDetailsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
+import ProductPage from "./pages/ProductPage";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import ComparePage from "./pages/ComparePage";
 
 
 const App = () => (
@@ -32,6 +36,10 @@ const App = () => (
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/bank-details/:orderId" element={<BankDetailsPage />} />
+          <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/compare" element={<ComparePage />} />
 
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />}>

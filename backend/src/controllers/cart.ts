@@ -17,9 +17,7 @@ export const saveCart = async (req: Request, res: Response): Promise<any> => {
   let { items } = req.body;
   if (!userId) return res.status(401).json({ message: "Не авторизовано" });
 
-
   console.log("saveCart items:", items, "type:", typeof items);
-
 
   if (!Array.isArray(items)) {
     return res.status(400).json({ message: "Некоректний формат кошика (items має бути масивом)" });

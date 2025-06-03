@@ -265,7 +265,7 @@ const DashboardOrders = () => {
                     </button>
                   )}
                 </div>
-                {/* --- CRUD: Edit form --- */}
+             
                 <div className="flex flex-col gap-2 mt-4 mb-4 rounded-xl bg-white/80 p-4 shadow w-full max-w-4xl mx-auto">
                   {editOrderId === order.id ? (
                     <>
@@ -347,27 +347,27 @@ const DashboardOrders = () => {
                   ) : (
                     <>
                       <div className="flex items-center gap-2 bg-[#e0e7e9] rounded px-3 py-2">
-                        <span className="font-semibold text-accent">Ім'я:</span>
+                        <span className="font-semibold text-header">Ім'я:</span>
                         <span className="break-all text-[#222]">{order.name || "-"}</span>
                       </div>
                       <div className="flex items-center gap-2 bg-[#e0e7e9] rounded px-3 py-2">
-                        <span className="font-semibold text-accent">Email:</span>
+                        <span className="font-semibold text-header">Email:</span>
                         <span className="break-all text-[#222]">{order.email || "-"}</span>
                       </div>
                       <div className="flex items-center gap-2 bg-[#e0e7e9] rounded px-3 py-2">
-                        <span className="font-semibold text-accent">Телефон:</span>
+                        <span className="font-semibold text-header">Телефон:</span>
                         <span className="break-all text-[#222]">{order.phone || "-"}</span>
                       </div>
                       <div className="flex items-center gap-2 bg-[#e3e6f3] rounded px-3 py-2">
-                        <span className="font-semibold text-accent">Адреса:</span>
+                        <span className="font-semibold text-header">Адреса:</span>
                         <span className="break-all text-[#222]">{order.address || "-"}</span>
                       </div>
                       <div className="flex items-center gap-2 bg-[#d6f5e6] rounded px-3 py-2">
-                        <span className="font-semibold text-accent">Створено:</span>
+                        <span className="font-semibold text-header">Створено:</span>
                         <span className="text-[#222]">{new Date(order.created_at).toLocaleString()}</span>
                       </div>
                       <div className="flex items-center gap-2 bg-[#f9f5db] rounded px-3 py-2">
-                        <span className="font-semibold text-accent">Оплата:</span>
+                        <span className="font-semibold text-header">Оплата:</span>
                         <span className="break-all text-[#222]">{order.payment_type || "-"}</span>
                       </div>
                     </>
@@ -381,9 +381,11 @@ const DashboardOrders = () => {
                 {order.items.map((item) => (
                   <li
                     key={item.id}
-                    className="bg-white p-3 rounded-lg border border-accent/40 shadow-sm flex flex-col sm:flex-row gap-4 items-start text-[#222]"
+                    className={`p-3 rounded-lg border border-accent/40 shadow-sm flex flex-col sm:flex-row gap-4 items-start text-[#222] ${
+                      !item.product_name ? "bg-red-100 border-red-300" : "bg-white"
+                    }`}
                   >
-                    {item.image_url && (
+                    {item.image_url ? (
                       <div className="flex-shrink-0 w-28 h-28 flex items-center justify-center bg-white rounded border border-gray-200 overflow-hidden">
                         <img
                           src={item.image_url}
@@ -391,10 +393,16 @@ const DashboardOrders = () => {
                           className="object-contain w-full h-full"
                         />
                       </div>
+                    ) : (
+                      <div className="flex-shrink-0 w-28 h-28 flex items-center justify-center bg-red-100 rounded border border-red-300 text-red-600 font-bold text-xs">
+                        Видалено
+                      </div>
                     )}
                     <div className="flex-1 flex flex-col gap-2">
-                      <div className="font-semibold text-accent text-base mb-1">
-                        {item.product_name || "Товар"}
+                      <div className={`font-semibold text-base mb-1 ${
+                        !item.product_name ? "text-red-600" : "text-accent"
+                      }`}>
+                        {item.product_name || "Товар видалено"}
                       </div>
                       <div className="flex flex-wrap gap-2 text-sm">
                         <div className="bg-[#e0e7e9] rounded px-2 py-1">
@@ -410,6 +418,11 @@ const DashboardOrders = () => {
                           <span className="font-semibold">Категорія:</span> {item.category_name || "-"}
                         </div>
                       </div>
+                      {!item.product_name && (
+                        <div className="mt-2 px-2 py-1 rounded bg-red-100 text-red-700 text-xs font-semibold border border-red-300">
+                          Товар було видалено з каталогу
+                        </div>
+                      )}
                     </div>
                   </li>
                 ))}
