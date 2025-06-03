@@ -32,6 +32,7 @@ import { getCart, saveCart } from "./controllers/cart";
 import { getAnalytics } from "./controllers/analytics";
 import { addOrUpdateReview, getReviews } from "./controllers/reviews";
 import { getArchivedProductById, getAllArchivedProducts } from "./controllers/archivedProducts";
+import { getFavorites, addFavorite, removeFavorite } from "./controllers/favorites";
 
 const router = express.Router();
 
@@ -90,5 +91,9 @@ router.get("/analytics", authenticateToken, requireAdminOrSeller, getAnalytics);
 
 router.get("/products/:productId/reviews", getReviews);
 router.post("/products/:productId/reviews", authenticateToken, addOrUpdateReview);
+
+router.get("/favorites", authenticateToken, getFavorites);
+router.post("/favorites", authenticateToken, addFavorite);
+router.delete("/favorites", authenticateToken, removeFavorite);
 
 export default router;

@@ -1,4 +1,4 @@
-import { useCart } from "../context/CartContext";
+import { useCart } from "../../context/CartContext";
 
 const DELIVERY_COST = 0;
 const PAYMENT_FEE = 30;
@@ -46,7 +46,7 @@ const OrderSummary = () => {
         <span>До сплати</span>
         <span className="font-bold text-black">{totalWithFee}₴</span>
       </div>
-      <div className="mb-2 flex items-center gap-2">
+      {/* <div className="mb-2 flex items-center gap-2">
         <input type="checkbox" id="no-paper" className="accent-accent" />
         <label
           htmlFor="no-paper"
@@ -54,7 +54,7 @@ const OrderSummary = () => {
         >
           Не друкувати паперові чеки та гарантійні талони
         </label>
-      </div>
+      </div> */}
       <div className="mb-2 text-xs text-dark">
         Підтверджуючи замовлення, я приймаю умови:{" "}
         <a

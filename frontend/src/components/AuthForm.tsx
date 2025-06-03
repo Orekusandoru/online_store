@@ -48,7 +48,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-bg shadow-md rounded-lg mt-16 sm:mt-24 md:mt-32 flex flex-col justify-center">
+    <div className="max-w-md mx-auto p-6 bg-card shadow-md rounded-lg mt-16 sm:mt-24 md:mt-32 flex flex-col justify-center">
       <h2 className="text-xl font-bold mb-4 text-dark">{type === "login" ? "Вхід" : "Реєстрація"}</h2>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit}>
@@ -68,7 +68,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        {type === "register" && (
+        {/* {type === "register" && (
           <select
             className="select-main w-full mb-3"
             value={role}
@@ -77,10 +77,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
             <option value="user">Користувач</option>
             <option value="seller">Продавець</option>
           </select>
-        )}
+        )} */}
         {type === "login" && (
           <div className="mb-3 text-right">
-            <Link to="/forgot-password" className="text-accent hover:underline text-sm">
+            <Link to="/forgot-password" className="text-cyan-700 hover:underline text-sm">
               Забули пароль?
             </Link>
           </div>

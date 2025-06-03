@@ -1,32 +1,37 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Product } from "../../types/types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ComparePage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const compareList: number[] = JSON.parse(localStorage.getItem("compareList") || "[]");
     if (compareList.length === 0) {
       setProducts([]);
       setLoading(false);
+      navigate("/shop");
       return;
     }
     axios
       .get<Product[]>("/api/products", { params: { ids: compareList.join(",") } })
       .then((res) => {
-     
         setProducts(res.data.filter(p => compareList.includes(p.id)));
       })
       .then(() => setLoading(false));
-  }, []);
+  }, [navigate]);
 
   const handleRemove = (id: number) => {
     const updated = products.filter((p) => p.id !== id);
     setProducts(updated);
     localStorage.setItem("compareList", JSON.stringify(updated.map((p) => p.id)));
+    window.dispatchEvent(new Event("compareListChanged"));
+    if (updated.length === 0) {
+      navigate("/shop");
+    }
   };
 
   if (loading) return <div className="p-6">Завантаження...</div>;
@@ -91,6 +96,7 @@ const ComparePage = () => {
         onClick={() => {
           localStorage.removeItem("compareList");
           setProducts([]);
+          window.dispatchEvent(new Event("compareListChanged"));
         }}
       >
         Очистити список порівняння

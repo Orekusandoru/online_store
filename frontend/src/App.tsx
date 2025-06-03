@@ -3,13 +3,13 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./routes/PrivateRoute";
-import DashboardCategories from "./components/DashboardCategories";
-import DashboardProducts from "./components/DashboardProducts";
+import DashboardCategories from "./components/DashboardComponents/DashboardCategories";
+import DashboardProducts from "./components/DashboardComponents/DashboardProducts";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import { CartProvider } from "./context/CartContext";
-import OrderForm from "./components/OrderForm";
-import DashboardOrders from "./components/DashboardOrders";
+import OrderForm from "./components/OrderComponents/OrderForm";
+import DashboardOrders from "./components/DashboardComponents/DashboardOrders";
 import Header from "./components/Header"; // додати
 import OrderPage from "./pages/OrderPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -21,6 +21,8 @@ import ProductPage from "./pages/ProductPage";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ComparePage from "./pages/ComparePage";
+import Privacy from "./pages/Privacy";
+import Favorites from "./pages/Favorites";
 
 
 const App = () => (
@@ -40,6 +42,8 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/compare" element={<ComparePage />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/favorites" element={<Favorites />} />
 
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />}>

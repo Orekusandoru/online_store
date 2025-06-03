@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {Category, NewCategory } from "../../types/types";
+import {Category, NewCategory } from "../../../types/types";
 
 
 const DashboardCategories = () => {

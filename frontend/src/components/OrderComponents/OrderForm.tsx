@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../../context/CartContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import OrderDeliveryFields from "./OrderDeliveryFields";
@@ -138,7 +138,7 @@ const OrderForm = () => {
   }
 
   return (
-    <form id="order" onSubmit={handleOrder} className="max-w-lg mx-auto p-6 bg-main m-2 rounded shadow">
+    <form id="order" onSubmit={handleOrder} className="max-w-lg mx-auto p-6 bg-card m-2 rounded shadow">
       <h2 className="text-xl font-bold mb-4 text-dark">Оформлення замовлення</h2>
       {error && <p className="text-red-500">{error}</p>}
       <input
