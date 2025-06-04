@@ -122,7 +122,7 @@ input:focus, textarea:focus {
 }
 
 .input-main {
-  @apply border-2 rounded px-4 mb-3 py-2 outline-none transition-all duration-200;
+  @apply border-2 rounded px-4 mb-3 py-1 outline-none transition-all duration-200;
   background: var(--color-card);
   border-color: var(--color-header);
   color: var(--color-text);

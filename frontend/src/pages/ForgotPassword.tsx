@@ -18,7 +18,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-bg shadow-md rounded-lg mt-16 sm:mt-24 md:mt-32 flex flex-col justify-center">
+    <div className="max-w-md mx-auto p-6 bg-card shadow-md rounded-lg mt-16 sm:mt-24 md:mt-32 flex flex-col justify-center">
       <h2 className="text-xl font-bold mb-4 text-dark">Скидання пароля</h2>
       {sent ? (
         <div className="text-green-600">Інструкції надіслано на email, якщо він зареєстрований.</div>

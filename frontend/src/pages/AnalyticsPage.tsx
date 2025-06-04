@@ -68,11 +68,11 @@ useEffect(() => {
 
   return (
     <div className="p-6 bg-main min-h-screen">
-      <h1 className="text-2xl font-bold mb-6 text-dark">Аналітика магазину</h1>
-      {/* Фільтри */}
+      <h1 className="text-2xl font-bold mb-6 text-light">Аналітика магазину</h1>
+    
       <div className="flex flex-wrap gap-4 mb-6 items-end">
         <div>
-          <label className="block text-dark font-semibold mb-1">Початкова дата</label>
+          <label className="block text-light font-semibold mb-1">Початкова дата</label>
           <input
             type="date"
             name="startDate"
@@ -82,7 +82,7 @@ useEffect(() => {
           />
         </div>
         <div>
-          <label className="block text-dark font-semibold mb-1">Кінцева дата</label>
+          <label className="block text-light font-semibold mb-1">Кінцева дата</label>
           <input
             type="date"
             name="endDate"
@@ -92,7 +92,7 @@ useEffect(() => {
           />
         </div>
         <div className="pb-4">
-          <label className="block text-dark font-semibold mb-1">Категорія</label>
+          <label className="block text-light font-semibold mb-1">Категорія</label>
           <select
             name="category"
             value={filters.category}
@@ -106,7 +106,7 @@ useEffect(() => {
           </select>
         </div>
         <div className="pb-4">
-          <label className="block text-dark font-semibold mb-1">Статус</label>
+          <label className="block text-light font-semibold mb-1">Статус</label>
           <select
             name="status"
             value={filters.status}
@@ -146,9 +146,9 @@ useEffect(() => {
               <span className="text-3xl font-bold text-accent">{data.newCustomers}</span>
             </div>
           </div>
-          {/* Графіки */}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Виручка по днях */}
+
             <div className="bg-white rounded-xl shadow p-6">
               <h2 className="text-lg font-bold mb-4 text-dark">Виручка по днях</h2>
               <ResponsiveContainer width="100%" height={250}>
@@ -163,14 +163,18 @@ useEffect(() => {
                     domain={[0, (dataMax: number) => Math.ceil(dataMax * 1.1)]}
                   />
                   <Tooltip
-                    labelFormatter={d => `Дата: ${dayjs(d).format("DD.MM.YYYY")}`}
+                    labelFormatter={d => (
+                      <span className="text-dark" >
+                        {`Дата: ${dayjs(d).format("DD.MM.YYYY")}`}
+                      </span>
+                    )}
                     formatter={(value: any) => [`${value} ₴`, "Виручка"]}
                   />
                   <Line type="monotone" dataKey="revenue" stroke="#FE7743" strokeWidth={3} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            {/* Розподіл замовлень за статусами */}
+      
             <div className="bg-white rounded-xl shadow p-6">
               <h2 className="text-lg font-bold mb-4 text-dark">Замовлення за статусами</h2>
               <ResponsiveContainer width="100%" height={250}>
@@ -197,18 +201,30 @@ useEffect(() => {
                 )}
               </ResponsiveContainer>
             </div>
-            {/* Популярні товари */}
+    
             <div className="bg-white rounded-xl shadow p-6 col-span-1 md:col-span-2">
               <h2 className="text-lg font-bold mb-4 text-dark">Топ-10 популярних товарів</h2>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data.popularProducts}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fill: "#222", fontWeight: 600 }}
+                  />
                   <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="total_sold" fill="#609966" />
+                  <Tooltip
+                    contentStyle={{ color: "#222", background: "#fff" }}
+                    itemStyle={{ color: "#222" }}
+                    labelStyle={{ color: "#222" }}
+                   
+                    labelFormatter={label => <span style={{ color: "#222" }}>{label}</span>}
+                  />
+                  <Bar dataKey="total_sold" fill="#609966" name="Продано" />
                 </BarChart>
               </ResponsiveContainer>
+              <div className="mt-2 text-center text-dark text-sm">
+    <span>Цифра під назвою товару — кількість проданих одиниць (Продано)</span>
+  </div>
             </div>
           </div>
         </>

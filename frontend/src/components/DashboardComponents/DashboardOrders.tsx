@@ -266,7 +266,7 @@ const DashboardOrders = () => {
                   )}
                 </div>
              
-                <div className="flex flex-col gap-2 mt-4 mb-4 rounded-xl bg-white/80 p-4 shadow w-full max-w-4xl mx-auto">
+                <div className="flex flex-col gap-2 mt-4 mb-4 rounded-xl bg-white p-4 shadow w-full max-w-4xl mx-auto">
                   {editOrderId === order.id ? (
                     <>
                       <div className="flex flex-col gap-2">

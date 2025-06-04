@@ -45,12 +45,23 @@ const Shop = () => {
     Number(filterForm.maxPrice) || 50000,
   ]);
 
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const didFetch = useRef(false);
+  const didFetchCategories = useRef(false);
 
   useEffect(() => {
+    if (didFetchCategories.current) return;
+    didFetchCategories.current = true;
     let cancelled = false;
     const fetchCategories = async () => {
       try {
+        // Try cache first
+        const cached = localStorage.getItem("categoriesCache");
+        if (cached) {
+          setCategories(JSON.parse(cached));
+          return;
+        }
         const res = await axios.get<Category[]>("/api/categories", {
           headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         });
@@ -62,12 +73,14 @@ const Shop = () => {
             res.data[0].name
           ) {
             setCategories(res.data);
+            localStorage.setItem("categoriesCache", JSON.stringify(res.data));
           } else {
             setCategories([]);
           }
         }
-      } catch (err) {
+      } catch (err: any) {
         if (!cancelled) setCategories([]);
+       
       }
     };
     fetchCategories();
@@ -93,9 +106,14 @@ const Shop = () => {
         setTotalPages(
           res.data.length < filters.limit ? filters.page : filters.page + 1
         );
+        setErrorMsg(null);
       })
       .catch((err) => {
-        console.error(err);
+        if (err?.response?.status === 429) {
+          setErrorMsg("Забагато запитів. Спробуйте пізніше.");
+        } else {
+          setErrorMsg("Помилка завантаження товарів.");
+        }
         setProducts([]);
       });
   }, [filters]);
@@ -128,6 +146,8 @@ const Shop = () => {
           .sort((a, b) => b[1] - a[1])
           .map(([id]) => Number(id))
           .slice(0, 6);
+
+        sessionStorage.setItem("recommendedOrderedIds", JSON.stringify(sortedIds));
 
         if (sortedIds.length > 0) {
         
@@ -327,7 +347,12 @@ const Shop = () => {
   };
 
   return (
-    <div className="p-6 bg-bg min-h-screen">
+    <div className=" bg-bg min-h-screen">
+      {errorMsg && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-center">
+          {errorMsg}
+        </div>
+      )}
       {recommended.length > 0 && (
         <div className="mb-8">
           <h2 className="text-xl font-bold mb-2 text-light">
@@ -335,57 +360,73 @@ const Shop = () => {
           </h2>
           <div className="overflow-x-auto">
             <ul className="flex gap-4 pb-2" style={{ minHeight: 220 }}>
-              {recommended.map((product) => (
-                <li
-                  key={product.id}
-                  className="min-w-[220px] max-w-[220px] border p-3 rounded shadow bg-card text-dark flex flex-col items-center"
-                  style={{ flex: "0 0 220px" }}
-                >
-                  <Link
-                    to={`/product/${product.id}`}
-                    className="w-full flex flex-col items-center"
+              {(() => {
+             
+                let orderedIds: number[] = [];
+                try {
+                  const stored = sessionStorage.getItem("recommendedOrderedIds");
+                  if (stored) orderedIds = JSON.parse(stored);
+                } catch {}
+                const orderedSet = new Set(orderedIds);
+                const ordered = recommended.filter(p => orderedSet.has(p.id));
+                const rest = recommended.filter(p => !orderedSet.has(p.id));
+              
+                const orderedSorted = orderedIds
+                  .map(id => ordered.find(p => p.id === id))
+                  .filter(Boolean) as typeof recommended;
+                const finalList = [...orderedSorted, ...rest];
+                return finalList.map((product) => (
+                  <li
+                    key={product.id}
+                    className="min-w-[220px] max-w-[220px] border p-3 rounded shadow bg-card text-dark flex flex-col items-center"
+                    style={{ flex: "0 0 220px" }}
                   >
-                    {product.image_url && (
-                      <img
-                        src={product.image_url}
-                        alt={product.name}
-                        className="w-32 h-32 object-contain bg-white rounded mb-2"
-                      />
-                    )}
-                    <h3 className="text-base font-semibold text-header text-center mb-1 truncate w-full">
-                      {product.name}
-                    </h3>
-                  </Link>
-                  <div className="flex items-center gap-1 mb-1">
-                    <span className="text-yellow-400 text-lg">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i}>
-                          {product.rating >= i + 1
-                            ? "★"
-                            : product.rating > i
-                            ? "★"
-                            : "☆"}
-                        </span>
-                      ))}
+                    <Link
+                      to={`/product/${product.id}`}
+                      className="w-full flex flex-col items-center"
+                    >
+                      {product.image_url && (
+                        <img
+                          src={product.image_url}
+                          alt={product.name}
+                          className="w-32 h-32 object-contain bg-white rounded mb-2"
+                        />
+                      )}
+                      <h3 className="text-base font-semibold text-header text-center mb-1 truncate w-full">
+                        {product.name}
+                      </h3>
+                    </Link>
+                    <div className="flex items-center gap-1 mb-1">
+                      <span className="text-yellow-400 text-lg">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span key={i}>
+                            {product.rating >= i + 1
+                              ? "★"
+                              : product.rating > i
+                              ? "★"
+                              : "☆"}
+                          </span>
+                        ))}
+                      </span>
+                      <span className="text-xs text-gray-500 ml-1">
+                        ({product.rating_count})
+                      </span>
+                    </div>
+                    <span className="text-lg font-bold bg-yellow-200 rounded-lg px-2 py-1 shadow-sm border border-yellow-200/60 tracking-wide flex items-center gap-1 text-dark mb-2">
+                      {product.price}
+                      <span className="font-bold text-[1.1em] ml-1 text-dark">
+                        ₴
+                      </span>
                     </span>
-                    <span className="text-xs text-gray-500 ml-1">
-                      ({product.rating_count})
-                    </span>
-                  </div>
-                  <span className="text-lg font-bold bg-yellow-200 rounded-lg px-2 py-1 shadow-sm border border-yellow-200/60 tracking-wide flex items-center gap-1 text-dark mb-2">
-                    {product.price}
-                    <span className="font-bold text-[1.1em] ml-1 text-dark">
-                      ₴
-                    </span>
-                  </span>
-                  <Link
-                    to={`/product/${product.id}`}
-                    className="btn-main w-full text-center py-1 px-2 text-sm"
-                  >
-                    Детальніше
-                  </Link>
-                </li>
-              ))}
+                    <Link
+                      to={`/product/${product.id}`}
+                      className="btn-main w-full text-center py-1 px-2 text-sm"
+                    >
+                      Детальніше
+                    </Link>
+                  </li>
+                ));
+              })()}
             </ul>
           </div>
         </div>
@@ -412,7 +453,8 @@ const Shop = () => {
                     {cat.name}
                   </option>
                 ))
-              )}
+              )
+            }
             </select>
             {categories.length === 0 && (
               <div className="text-xs text-gray-500 mt-1">

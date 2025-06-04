@@ -341,65 +341,58 @@ const DashboardProducts = () => {
             ) : (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <div>
-                      <span className="font-semibold text-accent">Назва:</span>
-                      <span className="ml-2">{product.name}</span>
+                  <div className="flex flex-col gap-3">
+                    <div className="bg-gray-50 rounded-lg px-4 py-2 flex flex-col gap-1 shadow-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-accent w-36">Назва:</span>
+                        <span className="font-medium">{product.name}</span>
+                      </div>
+                    
+                      <DescriptionToggle description={product.description} />
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-accent w-36">Ціна:</span>
+                        <span className="font-bold bg-yellow-100 rounded px-2 py-1">{product.price} ₴</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-accent w-36">Категорія:</span>
+                        <span>
+                          {categories.find((c) => c.id === product.category_id)?.name || product.category_id}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="font-semibold text-accent">Опис:</span>
-                      <span className="ml-2">{product.description}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-accent">Ціна:</span>
-                      <span className="ml-2">{product.price}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-accent">Категорія:</span>
-                      <span className="ml-2">
-                        {categories.find((c) => c.id === product.category_id)
-                          ?.name || product.category_id}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-accent">
-                        Діагональ екрана:
-                      </span>
-                      <span className="ml-2">{product.screen_size ?? "-"}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-accent">
-                        Роздільна здатність:
-                      </span>
-                      <span className="ml-2">{product.resolution ?? "-"}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-accent">RAM:</span>
-                      <span className="ml-2">{product.ram ?? "-"}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-accent">
-                        Накопичувач:
-                      </span>
-                      <span className="ml-2">{product.storage ?? "-"}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-accent">Процесор:</span>
-                      <span className="ml-2">{product.processor ?? "-"}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-accent">Батарея:</span>
-                      <span className="ml-2">{product.battery ?? "-"}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-accent">
-                        Частота оновлення:
-                      </span>
-                      <span className="ml-2">{product.refresh_rate ?? "-"}</span>
+                    <div className="bg-gray-50 rounded-lg px-4 py-2 flex flex-wrap gap-3 shadow-sm">
+                      <div className="flex flex-col items-start">
+                        <span className="font-semibold text-accent text-xs">Діагональ екрана</span>
+                        <span>{product.screen_size ?? "-"}</span>
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="font-semibold text-accent text-xs">Роздільна здатність</span>
+                        <span>{product.resolution ?? "-"}</span>
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="font-semibold text-accent text-xs">RAM</span>
+                        <span>{product.ram ?? "-"}</span>
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="font-semibold text-accent text-xs">Накопичувач</span>
+                        <span>{product.storage ?? "-"}</span>
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="font-semibold text-accent text-xs">Процесор</span>
+                        <span>{product.processor ?? "-"}</span>
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="font-semibold text-accent text-xs">Батарея</span>
+                        <span>{product.battery ?? "-"}</span>
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="font-semibold text-accent text-xs">Частота оновлення</span>
+                        <span>{product.refresh_rate ?? "-"}</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <div>
+                  <div className="flex flex-col gap-3 items-center justify-center">
+                    <div className="w-full flex flex-col items-center">
                       <span className="font-semibold text-accent">Картинка:</span>
                       <a
                         href={product.image_url}
@@ -419,17 +412,13 @@ const DashboardProducts = () => {
                         </div>
                       )}
                     </div>
-                    <div>
+                    <div className="w-full flex flex-col items-start">
                       <span className="font-semibold text-accent">Створено:</span>
-                      <span className="ml-2">
-                        {new Date(product.created_at).toLocaleString()}
-                      </span>
+                      <span className="ml-2">{new Date(product.created_at).toLocaleString()}</span>
                     </div>
-                    <div>
+                    <div className="w-full flex flex-col items-start">
                       <span className="font-semibold text-accent">Оновлено:</span>
-                      <span className="ml-2">
-                        {new Date(product.updated_at).toLocaleString()}
-                      </span>
+                      <span className="ml-2">{new Date(product.updated_at).toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -455,5 +444,34 @@ const DashboardProducts = () => {
     </div>
   );
 };
+
+function DescriptionToggle({ description }: { description: string }) {
+  const [open, setOpen] = useState(false);
+  if (!description) return (
+    <div className="flex items-center gap-2">
+      <span className="font-semibold text-accent w-36">Опис:</span>
+      <span className="font-medium text-gray-400">-</span>
+    </div>
+  );
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-accent w-36">Опис:</span>
+        <button
+          type="button"
+          className="text-accent underline text-sm"
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? "Сховати" : "Показати"}
+        </button>
+      </div>
+      {open && (
+        <div className="bg-white rounded px-2 py-1 mt-1 border border-gray-200 text-sm">
+          {description}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default DashboardProducts;
