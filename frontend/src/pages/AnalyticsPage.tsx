@@ -123,7 +123,7 @@ useEffect(() => {
           </select>
         </div>
       </div>
-      {/* Метрики */}
+      
       {loading ? (
         <div>Завантаження...</div>
       ) : data ? (

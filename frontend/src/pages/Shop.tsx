@@ -580,6 +580,7 @@ const Shop = () => {
                           name: product.name,
                           price: product.price,
                           quantity: 1,
+                          image_url: product.image_url || "", 
                         })
                       }
                     >
@@ -619,7 +620,10 @@ const Shop = () => {
                         />
                       </div>
                     )}
-                    <h2 className="text-lg font-semibold text-header">
+                    <h2
+                      className="text-lg font-semibold text-header line-clamp-2 leading-tight min-h-[2.7em]"
+                      title={product.name}
+                    >
                       {product.name}
                     </h2>
                   </Link>

@@ -1,5 +1,5 @@
 // src/components/Cart.tsx
-import axios from "axios";
+
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 
@@ -26,13 +26,22 @@ const Cart = ({ onClose }: CartProps) => {
         {cart.map((item) => (
           <li
             key={item.product_id}
-            className="flex justify-between items-center py-2"
+            className="flex justify-between items-center py-2 cursor-pointer bg-[#D9E7CB] hover:bg-[#B7D3A8] rounded transition-colors group"
+            onClick={() => navigate(`/product/${item.product_id}`)}
           >
-            <span>
+            <img
+              src={item.image_url}
+              alt={item.name}
+              className="w-16 h-16 object-cover rounded mr-2"
+            />
+            <span className="group-hover:underline transition-all">
               {item.name} — {item.quantity} x {item.price} грн
             </span>
             <button
-              onClick={() => removeFromCart(item.product_id)}
+              onClick={(e) => {
+                e.stopPropagation(); 
+                removeFromCart(item.product_id);
+              }}
               className="btn-outline m-1"
             >
               ✖

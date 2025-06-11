@@ -76,7 +76,7 @@ const OrderForm = () => {
       const response = await axios.post("/api/orders", orderPayload, { headers });
       const data = response.data as { orderId?: number; total?: number };
 
-      // LiqPay 
+    
       if (paymentType === "liqpay") {
         
         const liqpayRes = await axios.post<{ liqpayData: string; signature: string }>("/api/liqpay-initiate", {
