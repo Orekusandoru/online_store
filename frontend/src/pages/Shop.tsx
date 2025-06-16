@@ -27,6 +27,13 @@ const Shop = () => {
     minPrice: "",
     maxPrice: "",
     sort: "",
+    processor: "",
+    ram: "",
+    storage: "",
+    screen_size: "",
+    resolution: "",
+    battery: "",
+    refresh_rate: "",
   });
 
   const [filters, setFilters] = useState({
@@ -36,6 +43,13 @@ const Shop = () => {
     sort: "",
     page: 1,
     limit: 9,
+    processor: "",
+    ram: "",
+    storage: "",
+    screen_size: "",
+    resolution: "",
+    battery: "",
+    refresh_rate: "",
   });
   const [totalPages, setTotalPages] = useState(1);
   const [recommended, setRecommended] = useState<Product[]>([]);
@@ -47,6 +61,11 @@ const Shop = () => {
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const didFetch = useRef(false);
   const didFetchCategories = useRef(false);
 
@@ -56,31 +75,14 @@ const Shop = () => {
     let cancelled = false;
     const fetchCategories = async () => {
       try {
-        // Try cache first
-        const cached = localStorage.getItem("categoriesCache");
-        if (cached) {
-          setCategories(JSON.parse(cached));
-          return;
-        }
-        const res = await axios.get<Category[]>("/api/categories", {
-          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-        });
-        if (!cancelled) {
-          if (
-            Array.isArray(res.data) &&
-            res.data.length &&
-            res.data[0].id &&
-            res.data[0].name
-          ) {
+        const res = await axios.get<Category[]>("/api/categories");
+        console.log("Fetched categories:", res.data);
+       
             setCategories(res.data);
-            localStorage.setItem("categoriesCache", JSON.stringify(res.data));
-          } else {
-            setCategories([]);
-          }
-        }
+         
+        
       } catch (err: any) {
         if (!cancelled) setCategories([]);
-       
       }
     };
     fetchCategories();
@@ -206,7 +208,19 @@ const Shop = () => {
   };
 
   const handleResetFilters = () => {
-    setFilterForm({ category: "", minPrice: "", maxPrice: "", sort: "" });
+    setFilterForm({
+      category: "",
+      minPrice: "",
+      maxPrice: "",
+      sort: "",
+      processor: "",
+      ram: "",
+      storage: "",
+      screen_size: "",
+      resolution: "",
+      battery: "",
+      refresh_rate: "",
+    });
     setFilters((f) => ({
       ...f,
       category: "",
@@ -214,6 +228,13 @@ const Shop = () => {
       maxPrice: "",
       sort: "",
       page: 1,
+      processor: "",
+      ram: "",
+      storage: "",
+      screen_size: "",
+      resolution: "",
+      battery: "",
+      refresh_rate: "",
     }));
   };
 
@@ -294,6 +315,7 @@ const Shop = () => {
         if (prev.includes(productId)) return prev;
         const updated = [...prev, productId];
         localStorage.setItem("favoritesList", JSON.stringify(updated));
+        window.dispatchEvent(new Event("favoritesChanged"));
         return updated;
       });
     }
@@ -345,6 +367,59 @@ const Shop = () => {
       maxPrice: newRange[1].toString(),
     }));
   };
+
+
+  useEffect(() => {
+    if (!search.trim()) {
+      setSearchResults([]);
+      setShowAutocomplete(false);
+      return;
+    }
+    const lower = search.toLowerCase();
+    const results = products.filter((p) =>
+      [p.name, p.description, p.processor]
+        .filter(Boolean)
+        .some((field) => field?.toLowerCase().includes(lower))
+    );
+    setSearchResults(results);
+    setShowAutocomplete(true);
+  }, [search, products]);
+
+ 
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (
+        searchInputRef.current &&
+        !searchInputRef.current.contains(e.target as Node)
+      ) {
+        setShowAutocomplete(false);
+      }
+    }
+    if (showAutocomplete) {
+      document.addEventListener("mousedown", handleClick);
+      return () => document.removeEventListener("mousedown", handleClick);
+    }
+  }, [showAutocomplete]);
+
+
+  function getUniqueValues<T extends keyof Product>(
+    products: Product[],
+    field: T
+  ): (Product[T] | "")[] {
+    const values = products
+      .map((p) => p[field])
+      .filter((v) => v !== undefined && v !== null && v !== "");
+    return Array.from(new Set(values)).sort((a, b) =>
+      typeof a === "number" && typeof b === "number"
+        ? a - b
+        : String(a).localeCompare(String(b))
+    );
+  }
+
+  const selectedCategoryId = filterForm.category ? Number(filterForm.category) : null;
+  const filteredProductsForOptions = selectedCategoryId
+    ? products.filter((p) => p.category_id === selectedCategoryId)
+    : products;
 
   return (
     <div className=" bg-bg min-h-screen">
@@ -431,6 +506,39 @@ const Shop = () => {
           </div>
         </div>
       )}
+     
+      <div className="mb-3 w-full relative max-w-lg mx-auto">
+        <input
+          ref={searchInputRef}
+          type="text"
+          className="input-main w-full"
+          placeholder="Пошук товару за назвою, описом або характеристиками..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          onFocus={() => search && setShowAutocomplete(true)}
+        />
+        {showAutocomplete && searchResults.length > 0 && (
+          <ul className="absolute z-10 bg-white text-dark border border-gray-200 rounded w-full mt-1 shadow max-h-60 overflow-y-auto">
+            {searchResults.map((p) => (
+              <li
+                key={p.id}
+                className="px-4 py-2 hover:bg-accent/10 cursor-pointer"
+                onClick={() => {
+                  setSearch(p.name);
+                  setShowAutocomplete(false);
+               
+                  const el = document.getElementById(`product-${p.id}`);
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                }}
+              >
+                <span className="font-semibold">{p.name}</span>
+                <span className="text-xs text-gray-500 ml-2">{p.processor}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
       <div className="flex gap-8">
         <aside className="w-full max-w-xs md:w-64 bg-card rounded-xl shadow p-6 mb-8 flex flex-col gap-4">
           <div>
@@ -524,6 +632,134 @@ const Shop = () => {
           <button className="btn-outline w-full" onClick={handleResetFilters}>
             Скинути
           </button>
+        
+        
+          <div>
+            <label className="block text-dark font-semibold mb-1">Процесор</label>
+            <select
+              name="processor"
+              value={filterForm.processor}
+              onChange={handleFilterFormChange}
+              className="select-main w-full"
+            >
+              <option value="">Всі</option>
+              {getUniqueValues(filteredProductsForOptions, "processor").map((v) =>
+                v ? (
+                  <option key={v as string} value={v as string}>
+                    {v}
+                  </option>
+                ) : null
+              )}
+            </select>
+          </div>
+          <div>
+            <label className="block text-dark font-semibold mb-1">RAM (ГБ)</label>
+            <select
+              name="ram"
+              value={filterForm.ram}
+              onChange={handleFilterFormChange}
+              className="select-main w-full"
+            >
+              <option value="">Всі</option>
+              {getUniqueValues(filteredProductsForOptions, "ram").map((v) =>
+                v !== "" ? (
+                  <option key={v as string | number} value={v as string | number}>
+                    {v}
+                  </option>
+                ) : null
+              )}
+            </select>
+          </div>
+          <div>
+            <label className="block text-dark font-semibold mb-1">Накопичувач (ГБ)</label>
+            <select
+              name="storage"
+              value={filterForm.storage}
+              onChange={handleFilterFormChange}
+              className="select-main w-full"
+            >
+              <option value="">Всі</option>
+              {getUniqueValues(filteredProductsForOptions, "storage").map((v) =>
+                v !== "" ? (
+                  <option key={v as string | number} value={v as string | number}>
+                    {v}
+                  </option>
+                ) : null
+              )}
+            </select>
+          </div>
+          <div>
+            <label className="block text-dark font-semibold mb-1">Діагональ екрана (дюйми)</label>
+            <select
+              name="screen_size"
+              value={filterForm.screen_size}
+              onChange={handleFilterFormChange}
+              className="select-main w-full"
+            >
+              <option value="">Всі</option>
+              {getUniqueValues(filteredProductsForOptions, "screen_size").map((v) =>
+                v !== "" ? (
+                  <option key={v as string | number} value={v as string | number}>
+                    {v}
+                  </option>
+                ) : null
+              )}
+            </select>
+          </div>
+          <div>
+            <label className="block text-dark font-semibold mb-1">Роздільна здатність</label>
+            <select
+              name="resolution"
+              value={filterForm.resolution}
+              onChange={handleFilterFormChange}
+              className="select-main w-full"
+            >
+              <option value="">Всі</option>
+              {getUniqueValues(filteredProductsForOptions, "resolution").map((v) =>
+                v ? (
+                  <option key={v as string} value={v as string}>
+                    {v}
+                  </option>
+                ) : null
+              )}
+            </select>
+          </div>
+          <div>
+            <label className="block text-dark font-semibold mb-1">Батарея (мА·г)</label>
+            <select
+              name="battery"
+              value={filterForm.battery}
+              onChange={handleFilterFormChange}
+              className="select-main w-full"
+            >
+              <option value="">Всі</option>
+              {getUniqueValues(filteredProductsForOptions, "battery").map((v) =>
+                v !== "" ? (
+                  <option key={v as string | number} value={v as string | number}>
+                    {v}
+                  </option>
+                ) : null
+              )}
+            </select>
+          </div>
+          <div>
+            <label className="block text-dark font-semibold mb-1">Частота оновлення (Гц)</label>
+            <select
+              name="refresh_rate"
+              value={filterForm.refresh_rate}
+              onChange={handleFilterFormChange}
+              className="select-main w-full"
+            >
+              <option value="">Всі</option>
+              {getUniqueValues(filteredProductsForOptions, "refresh_rate").map((v) =>
+                v !== "" ? (
+                  <option key={v as string | number} value={v as string | number}>
+                    {v}
+                  </option>
+                ) : null
+              )}
+            </select>
+          </div>
         </aside>
 
         <main className="flex-1">
@@ -534,15 +770,16 @@ const Shop = () => {
               </button>
             </div>
           )}
-          {products.length === 0 ? (
+          {(search.trim() ? searchResults : products).length === 0 ? (
             <div className="p-6 text-center text-gray-500">
               Товарів не знайдено
             </div>
           ) : (
             <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-              {products.map((product) => (
+              {(search.trim() ? searchResults : products).map((product) => (
                 <li
                   key={product.id}
+                  id={`product-${product.id}`}
                   className="border p-4 rounded shadow bg-card text-dark"
                 >
                   <div className="flex items-center mb-2 gap-2">

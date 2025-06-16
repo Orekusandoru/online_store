@@ -52,7 +52,9 @@ export const createProduct = async (req: Request, res: Response): Promise<any> =
 };
 
 export const getProducts = async (req: Request, res: Response): Promise<any> => {
-  const { category, minPrice, maxPrice, sort, page, limit } = req.query;
+  const { category, minPrice, maxPrice, sort, page, limit,
+    processor, ram, storage, screen_size, resolution, battery, refresh_rate
+  } = req.query;
 
   let query = `SELECT * FROM products WHERE 1=1`;
   const values: any[] = [];
@@ -71,6 +73,43 @@ export const getProducts = async (req: Request, res: Response): Promise<any> => 
   if (maxPrice) {
     query += ` AND price <= $${queryIndex}`;
     values.push(maxPrice);
+    queryIndex++;
+  }
+
+
+  if (processor) {
+    query += ` AND processor = $${queryIndex}`;
+    values.push(processor);
+    queryIndex++;
+  }
+  if (ram) {
+    query += ` AND ram = $${queryIndex}`;
+    values.push(ram);
+    queryIndex++;
+  }
+  if (storage) {
+    query += ` AND storage = $${queryIndex}`;
+    values.push(storage);
+    queryIndex++;
+  }
+  if (screen_size) {
+    query += ` AND screen_size = $${queryIndex}`;
+    values.push(screen_size);
+    queryIndex++;
+  }
+  if (resolution) {
+    query += ` AND resolution = $${queryIndex}`;
+    values.push(resolution);
+    queryIndex++;
+  }
+  if (battery) {
+    query += ` AND battery = $${queryIndex}`;
+    values.push(battery);
+    queryIndex++;
+  }
+  if (refresh_rate) {
+    query += ` AND refresh_rate = $${queryIndex}`;
+    values.push(refresh_rate);
     queryIndex++;
   }
 

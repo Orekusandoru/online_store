@@ -112,6 +112,26 @@ const ProfilePage = () => {
     }
   };
 
+
+  function translateOrderStatus(status: string): string {
+    switch (status) {
+      case "pending":
+        return "Очікує відправки";
+      case "paid":
+        return "Оплачено";
+      case "shipped":
+        return "Відправлено";
+      case "delivered":
+        return "Доставлено";
+      case "cancelled":
+        return "Скасовано";
+      case "processing":
+        return "В обробці";
+      default:
+        return status;
+    }
+  }
+
   if (!user) return <div className="p-6">Завантаження профілю...</div>;
 
   return (
@@ -302,7 +322,7 @@ const ProfilePage = () => {
                         <span className="text-gray-400">|</span>
                         <span className="font-semibold">Статус:</span>
                         <span className="text-accent font-bold">
-                          {order.status}
+                          {translateOrderStatus(order.status)}
                         </span>
 
                         {order.payment_type === "bank" &&

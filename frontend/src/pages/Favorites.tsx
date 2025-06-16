@@ -12,12 +12,10 @@ const Favorites = () => {
 
   const token = sessionStorage.getItem("token");
 
- 
   useEffect(() => {
     const fetchFavorites = async () => {
       setLoading(true);
       if (token) {
-     
         try {
           const res = await axios.get<Product[]>("/api/favorites", {
             headers: { Authorization: `Bearer ${token}` },
@@ -29,25 +27,46 @@ const Favorites = () => {
           setFavoritesList([]);
         }
       } else {
-      
         const fav = localStorage.getItem("favoritesList");
-        const ids: number[] = fav ? JSON.parse(fav) : [];
+        let ids: number[] = [];
+        if (fav) {
+          try {
+            const parsed = JSON.parse(fav);
+            if (Array.isArray(parsed)) {
+              ids = parsed;
+            } else if (typeof parsed === "number") {
+              ids = [parsed];
+            }
+          } catch {
+            ids = [];
+          }
+        }
         setFavoritesList(ids);
+        console.log("Favorites IDs from localStorage:", ids);
         if (ids.length === 0) {
           setProducts([]);
         } else {
-          axios
-            .get<Product[]>("/api/products", { params: { ids: ids.join(",") } })
-            .then((res) => setProducts(res.data))
-            .catch(() => setProducts([]));
+          try {
+            const productsArr = await Promise.all(
+              ids.map(async (id) => {
+                try {
+                  const res = await axios.get<Product>(`/api/products/${id}`);
+                  return res.data;
+                } catch {
+                  return null;
+                }
+              })
+            );
+            setProducts(productsArr.filter((p): p is Product => p !== null));
+          } catch {
+            setProducts([]);
+          }
         }
       }
       setLoading(false);
     };
     fetchFavorites();
-  
   }, [token]);
-
 
   const handleRemoveFromFavorites = async (productId: number) => {
     if (token) {
@@ -76,11 +95,16 @@ const Favorites = () => {
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-accent">Обране</h1>
       {products.length === 0 ? (
-        <div className="text-light text-3xl text-center">У вас немає вибраних товарів.</div>
+        <div className="text-light text-3xl text-center">
+          У вас немає вибраних товарів.
+        </div>
       ) : (
         <ul className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           {products.map((product) => (
-            <li key={product.id} className="border p-4 rounded shadow bg-card text-dark">
+            <li
+              key={product.id}
+              className="border p-4 rounded shadow bg-card text-dark"
+            >
               <Link to={`/product/${product.id}`}>
                 {product.image_url && (
                   <div className="flex justify-center items-center mb-2">
@@ -91,7 +115,12 @@ const Favorites = () => {
                     />
                   </div>
                 )}
-                <h2 className="text-lg font-semibold text-header">{product.name}</h2>
+                <h2
+                  className="text-lg font-semibold text-header line-clamp-2 min-h-[2.7em]"
+                  title={product.name}
+                >
+                  {product.name}
+                </h2>
               </Link>
               <div className="flex items-center justify-between mt-2 mb-1">
                 <span className="text-2xl font-bold bg-yellow-200 rounded-lg px-2 py-1 shadow-sm border border-yellow-200/60 tracking-wide flex items-center gap-1 text-dark">
@@ -103,7 +132,13 @@ const Favorites = () => {
                   title="Видалити з обраного"
                   onClick={() => handleRemoveFromFavorites(product.id)}
                 >
-                  <span role="img" aria-label="Видалити з обраного" className="text-xl">❌</span>
+                  <span
+                    role="img"
+                    aria-label="Видалити з обраного"
+                    className="text-xl"
+                  >
+                    ❌
+                  </span>
                 </button>
               </div>
               <button
@@ -114,7 +149,7 @@ const Favorites = () => {
                     name: product.name,
                     price: product.price,
                     quantity: 1,
-                    image_url: product.image_url || "", 
+                    image_url: product.image_url || "",
                   })
                 }
               >

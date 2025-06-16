@@ -58,7 +58,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         "/api/cart",
         { items: safeCart },
         { headers: { Authorization: `Bearer ${token}` } }
-      );
+      ).catch((err) => {
+        if (err.response?.status === 429) {
+          alert("Забагато запитів до кошика. Спробуйте пізніше.");
+        } else {
+          console.error(err);
+        }
+      });
     } else {
       localStorage.setItem("cart", JSON.stringify(cart));
     }

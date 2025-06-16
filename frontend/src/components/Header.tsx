@@ -12,6 +12,7 @@ const Header = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [showContacts, setShowContacts] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const cartRef = useRef<HTMLDivElement>(null);
   const compareRef = useRef<HTMLDivElement>(null);
   const { cart } = useCart();
@@ -71,6 +72,20 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [compareOpen]);
 
+
+  const handleNavClick = (cb?: () => void) => {
+    setMobileMenuOpen(false);
+    if (cb) cb();
+  };
+
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth >= 768) setMobileMenuOpen(false);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("role");
@@ -89,8 +104,17 @@ const Header = () => {
         >
           Online Store
         </Link>
+  
+        <button
+          className="md:hidden flex items-center px-2 py-1 rounded hover:bg-accent/10 ml-2"
+          onClick={() => setMobileMenuOpen((v) => !v)}
+          aria-label="Меню"
+        >
+          <span className="text-2xl">&#9776;</span>
+        </button>
+
         <div className="flex-1 flex justify-center">
-          <nav className="flex gap-4 items-center">
+          <nav className="hidden md:flex gap-4 items-center">
             <Link to="/shop" className="btn-outline">
               Магазин
             </Link>
@@ -106,7 +130,6 @@ const Header = () => {
                 Адмін-панель
               </Link>
             )}
-           
             <button
               className="relative btn-outline"
               onClick={() => {
@@ -123,7 +146,6 @@ const Header = () => {
                 </span>
               )}
             </button>
-           
             <button
               className="relative btn-outline"
               onClick={() => window.location.href = "/favorites"}
@@ -137,7 +159,6 @@ const Header = () => {
                 </span>
               )}
             </button>
-           
             <button
               className="relative btn-outline"
               onClick={() => setCartOpen((v) => !v)}
@@ -210,6 +231,101 @@ const Header = () => {
           </div>
         )}
       </div>
+ 
+      {mobileMenuOpen && (
+        <div className="md:hidden absolute left-0 top-full w-full bg-header border-t border-accent z-40 shadow-lg animate-fade-in">
+          <nav className="flex flex-col gap-2 p-4 items-end">
+            <Link to="/shop" className="btn-outline w-full text-right" onClick={() => handleNavClick()}>
+              Магазин
+            </Link>
+            <button
+              className="btn-outline w-full text-right"
+              onClick={() => {
+                handleNavClick(() => setShowContacts(true));
+              }}
+              type="button"
+            >
+              Контакти
+            </button>
+            {token && role === "admin" && (
+              <Link to="/dashboard" className="btn-outline w-full text-right" onClick={() => handleNavClick()}>
+                Адмін-панель
+              </Link>
+            )}
+            <button
+              className="relative btn-outline w-full text-right"
+              onClick={() => {
+                handleNavClick(() => { setCompareOpen(false); window.location.href = "/compare"; });
+              }}
+              aria-label="Порівняння"
+              type="button"
+            >
+              <span role="img" aria-label="Порівняння" className="text-xl">⚖️</span>
+              {compareCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-accent text-white text-xs font-bold rounded-full px-2 py-0.5 shadow">
+                  {compareCount}
+                </span>
+              )}
+              <span className="ml-2">Порівняння</span>
+            </button>
+            <button
+              className="relative btn-outline w-full text-right"
+              onClick={() => handleNavClick(() => window.location.href = "/favorites")}
+              aria-label="Обране"
+              type="button"
+            >
+              <span role="img" aria-label="Обране" className="text-xl">⭐</span>
+              {favoritesCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-accent text-white text-xs font-bold rounded-full px-2 py-0.5 shadow">
+                  {favoritesCount}
+                </span>
+              )}
+              <span className="ml-2">Обране</span>
+            </button>
+            <button
+              className="relative btn-outline w-full text-right"
+              onClick={() => handleNavClick(() => setCartOpen((v) => !v))}
+              aria-label="Кошик"
+              type="button"
+            >
+              <span role="img" aria-label="Кошик" className="text-xl">🛒</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-accent text-white text-xs font-bold rounded-full px-2 py-0.5 shadow">
+                  {cartCount}
+                </span>
+              )}
+              <span className="ml-2">Кошик</span>
+            </button>
+            {token && (
+              <Link
+                to="/profile"
+                className="btn-outline w-full flex items-center gap-1 justify-end"
+                aria-label="Кабінет"
+                title="Особистий кабінет"
+                onClick={() => handleNavClick()}
+              >
+                <span className="text-lg">👤</span>
+                <span>Кабінет</span>
+              </Link>
+            )}
+            {!token && (
+              <>
+                <Link to="/login" className="btn-outline w-full text-right" onClick={() => handleNavClick()}>
+                  Вхід
+                </Link>
+                <Link to="/register" className="btn-outline w-full text-right" onClick={() => handleNavClick()}>
+                  Реєстрація
+                </Link>
+              </>
+            )}
+            {token && (
+              <button onClick={() => { handleNavClick(); handleLogout(); }} className="btn-main mt-2 w-full text-right">
+                Вийти
+              </button>
+            )}
+          </nav>
+        </div>
+      )}
     </header>
   );
 };

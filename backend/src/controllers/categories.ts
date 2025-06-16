@@ -21,6 +21,7 @@ export const createCategory = async (req: Request, res: Response): Promise<any> 
 export const getCategories = async (req: Request, res: Response): Promise<any> => {
   try {
     const result = await pool.query("SELECT id, name FROM categories ORDER BY id ASC");
+    
     res.json(result.rows);
   } catch (error) {
     console.error(error);

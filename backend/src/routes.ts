@@ -56,13 +56,13 @@ router.patch("/products/:id", authenticateToken, updateProduct);
 router.delete("/products/:id", authenticateToken, deleteProduct);
 router.get("/products/:id", getProductById); 
 
-// Архівовані товари
+
 router.get("/archived-products", getAllArchivedProducts);
 router.get("/archived-products/:id", getArchivedProductById);
 
 // Категорії
 router.post("/categories", authenticateToken, createCategory);  
-router.get("/categories", authenticateToken, getCategories);  
+router.get("/categories", getCategories);  
 router.patch("/categories/:id", authenticateToken, updateCategory); 
 router.delete("/categories/:id", authenticateToken, deleteCategory); 
 
