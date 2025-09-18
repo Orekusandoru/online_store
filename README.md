@@ -24,7 +24,6 @@
 - **Backend:** Node.js (Express), TypeScript
 - **Frontend:** React, TypeScript, Tailwind CSS
 - **Database:** PostgreSQL
-- **AI/ML:** Рекомендації на основі історії покупок (алгоритми на backend)
 - **DevOps:** Docker, CI/CD
 
 ---
