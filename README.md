@@ -48,7 +48,7 @@
 
 1. Клонувати репозиторій:
    ```bash
-   git clone https://github.com/username/smart-online-store.git
+   git clone https://github.com/username/online-store.git
    ```
 2. Перейти в директорію проєкту:
    ```bash
